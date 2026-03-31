@@ -1,0 +1,61 @@
+.section {
+  padding: var(--space-xl) 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.label {
+  text-align: center;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--space-lg);
+}
+
+.track {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+}
+
+.inner {
+  display: flex;
+  gap: var(--space-2xl);
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+
+.client {
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  opacity: 0.6;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.client:hover {
+  opacity: 1;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0) }
+  to { transform: translateX(-50%) }
+}

@@ -1,0 +1,125 @@
+.reel {
+  position: relative;
+  height: 100svh;
+  width: 100%;
+}
+
+.container {
+  height: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Right-edge progress */
+.progress {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 10;
+}
+
+.progressTrack {
+  width: 1.5px;
+  height: 120px;
+  background: rgba(245, 245, 245, 0.12);
+  border-radius: 1px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--text-primary);
+  border-radius: 1px;
+  transition: height var(--duration-fast) var(--ease-out);
+  min-height: 2px;
+}
+
+.progressDots {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(245, 245, 245, 0.25);
+  transition: background var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+  padding: 0;
+}
+
+.dotActive {
+  background: var(--text-primary);
+  transform: scale(1.5);
+}
+
+/* Scroll hint */
+.scrollHint {
+  position: absolute;
+  bottom: var(--space-xl);
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+  animation: fadeOut 1s var(--ease-out) 3s forwards;
+}
+
+.scrollLine {
+  width: 1px;
+  height: 40px;
+  background: rgba(245, 245, 245, 0.3);
+  animation: scrollDrop 1.5s var(--ease-in-out) infinite;
+}
+
+.scrollLabel {
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245, 245, 245, 0.4);
+  writing-mode: vertical-rl;
+}
+
+@keyframes scrollDrop {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; pointer-events: none; }
+}
+
+@media (max-width: 768px) {
+  .progress {
+    right: 12px;
+  }
+
+  .progressTrack {
+    height: 80px;
+  }
+
+  .scrollHint {
+    display: none;
+  }
+}
