@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import styles from './about.module.css'
 
 export const metadata: Metadata = {
@@ -43,7 +42,7 @@ export default function AboutPage() {
             <span className={styles.statLabel}>Projects completed</span>
           </div>
           <div className={styles.stat}>
-            <span className={styles.statNumber}>4</span>
+            <span className={styles.statNumber}>3</span>
             <span className={styles.statLabel}>Drone platforms</span>
           </div>
           <div className={styles.stat}>
@@ -53,29 +52,41 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Equipment strip */}
-      <div className={styles.equipment}>
-        <p className={styles.equipLabel}>Our platforms</p>
-        <div className={styles.drones}>
-          {[
-            { src: '/images/drones/dji-inspire-3.png', name: 'DJI Inspire 3' },
-            { src: '/images/drones/beast-fpv.png', name: 'Cinelifter FPV' },
-            { src: '/images/drones/siccario-fpv.png', name: 'Gimbal FPV' },
-            { src: '/images/drones/qav-pro-lifter.png', name: 'Racing FPV' },
-          ].map((drone) => (
-            <div key={drone.name} className={styles.drone}>
-              <div className={styles.droneImg}>
-                <Image
-                  src={drone.src}
-                  alt={drone.name}
-                  fill
-                  sizes="200px"
-                  style={{ objectFit: 'contain' }}
-                />
-              </div>
-              <p className={styles.droneName}>{drone.name}</p>
-            </div>
-          ))}
+      {/* Editorial statement */}
+      <div className={styles.statement}>
+        <blockquote className={styles.quote}>
+          &ldquo;We don&apos;t just film from the air.
+          <br />
+          We find perspectives that make people stop.&rdquo;
+        </blockquote>
+        <p className={styles.quoteAttr}>— Fran Kaic, Founder &amp; Aerial Cinematographer</p>
+      </div>
+
+      {/* Approach pillars */}
+      <div className={styles.pillars}>
+        <div className={styles.pillar}>
+          <span className={styles.pillarNum}>01</span>
+          <h3 className={styles.pillarTitle}>Platform-first thinking</h3>
+          <p className={styles.pillarText}>
+            Every shot starts with the right machine. We match platform to vision —
+            not the other way around.
+          </p>
+        </div>
+        <div className={styles.pillar}>
+          <span className={styles.pillarNum}>02</span>
+          <h3 className={styles.pillarTitle}>Cinematic precision</h3>
+          <p className={styles.pillarText}>
+            Raw altitude means nothing. We&apos;re obsessed with motion, light,
+            and the frame that moves people.
+          </p>
+        </div>
+        <div className={styles.pillar}>
+          <span className={styles.pillarNum}>03</span>
+          <h3 className={styles.pillarTitle}>On-set reliability</h3>
+          <p className={styles.pillarText}>
+            Productions trust us because we deliver — on schedule, in any weather,
+            with every permit in order.
+          </p>
         </div>
       </div>
     </main>

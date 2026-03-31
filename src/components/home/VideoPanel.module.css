@@ -1,11 +1,10 @@
-/* Panel: 90svh so the next panel peeks below */
+/* 90svh: next panel peeks below, signalling scroll */
 .panel {
   position: relative;
   height: 90svh;
   width: 100%;
   overflow: hidden;
-  /* Radial glow gives depth when video hasn't loaded yet */
-  background: radial-gradient(ellipse at 60% 40%, #1c1c22 0%, #0A0A0C 65%);
+  background: radial-gradient(ellipse at 60% 40%, #1c1c24 0%, #0A0A0C 70%);
 }
 
 .video {
@@ -14,94 +13,82 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Slight fade-in when video first plays */
-  transition: opacity 0.6s ease;
 }
 
-/* Bottom-heavy gradient */
 .overlayBottom {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to top,
-    rgba(10, 10, 12, 0.9) 0%,
+    rgba(10, 10, 12, 0.92) 0%,
     rgba(10, 10, 12, 0.3) 35%,
-    transparent 65%
+    transparent 62%
   );
   pointer-events: none;
   z-index: 1;
 }
 
-/* Top gradient for nav legibility */
 .overlayTop {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(10, 10, 12, 0.5) 0%,
-    transparent 22%
-  );
+  background: linear-gradient(to bottom, rgba(10, 10, 12, 0.45) 0%, transparent 20%);
   pointer-events: none;
   z-index: 1;
 }
 
-/* Panel number — top right */
 .panelNumber {
   position: absolute;
   top: calc(var(--nav-height) + var(--space-md));
-  right: 72px; /* clear of the reel indicator */
-  font-size: 0.625rem;
+  right: 100px; /* clear of reel indicator */
+  font-size: 0.5625rem;
   font-weight: 500;
-  letter-spacing: 0.25em;
-  color: rgba(245, 245, 245, 0.25);
+  letter-spacing: 0.28em;
+  color: rgba(245, 245, 245, 0.22);
   z-index: 2;
 }
 
-/* Meta — bottom left */
+/* ─── Meta ─── */
 .meta {
   position: absolute;
-  bottom: clamp(28px, 5vh, 56px);
+  bottom: clamp(32px, 6vh, 64px);
   left: var(--side-padding);
   z-index: 2;
-  transition:
-    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Default: always visible (touch/mobile) */
 }
 
 .client {
   font-size: 0.6875rem;
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--accent);
   margin-bottom: 10px;
 }
 
 .title {
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-size: clamp(2rem, 5.5vw, 4.5rem);
   font-weight: 300;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   color: var(--text-primary);
-  line-height: 1.05;
+  line-height: 1.0;
 }
 
 .credits {
   font-size: 0.6875rem;
-  color: rgba(245, 245, 245, 0.35);
-  letter-spacing: 0.12em;
+  color: rgba(245, 245, 245, 0.3);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
-/* Play button — solid white, centered */
+/* ─── Play button ─── */
 .playBtn {
   position: absolute;
   top: 50%;
   left: 50%;
-  /* Use separate translate property so transform can animate independently */
   translate: -50% -50%;
-  width: 76px;
-  height: 76px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: #ffffff;
   color: #0A0A0C;
@@ -111,14 +98,12 @@
   border: none;
   outline: none;
   z-index: 2;
-  transition:
-    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Default: always visible */
 }
 
 .playBtn svg {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   margin-left: 4px;
 }
 
@@ -130,51 +115,62 @@
   transform: scale(0.94);
 }
 
-/* ─── Pointer devices: animate UI in on hover ─── */
+/* ─── Pointer devices: animate UI in/out ─── */
 @media (hover: hover) and (pointer: fine) {
+  /* Hidden state — fast hide (uses "after-change" transition: 0.7s) */
   .meta {
     opacity: 0;
-    transform: translateY(16px);
-  }
-
-  .panel:hover .meta {
-    opacity: 1;
-    transform: translateY(0);
+    transform: translateY(18px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .playBtn {
     opacity: 0;
-    transform: scale(0.8);
+    transform: scale(0.78);
+    transition:
+      opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .panel:hover .playBtn {
+  /* Shown state — slow reveal (uses "after-change" transition: 1.3s / 1.2s) */
+  /* Triggered by hover OR by panelActive class (initial-active panel) */
+  .panel:hover .meta,
+  .panelActive .meta {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 1.35s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 1.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .panel:hover .playBtn,
+  .panelActive .playBtn {
     opacity: 1;
     transform: scale(1);
+    transition:
+      opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
+  /* Scale on hover of the button itself */
   .panel:hover .playBtn:hover {
     transform: scale(1.1);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   }
 }
 
-/* ─── Touch devices: UI always visible ─── */
+/* ─── Touch devices: smaller play button ─── */
 @media (hover: none) or (pointer: coarse) {
-  .meta {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
   .playBtn {
-    opacity: 1;
-    transform: scale(1);
-    /* Smaller on mobile */
-    width: 60px;
-    height: 60px;
+    width: 64px;
+    height: 64px;
   }
 
   .playBtn svg {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
   }
 }
 
@@ -187,7 +183,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: fadeIn 0.3s ease;
+  animation: fadeIn 0.35s ease;
 }
 
 .ytClose {
@@ -196,7 +192,7 @@
   right: var(--space-md);
   width: 48px;
   height: 48px;
-  color: rgba(245, 245, 245, 0.6);
+  color: rgba(245, 245, 245, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -208,8 +204,8 @@
 }
 
 .ytClose svg {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
 }
 
 .ytWrapper {
@@ -223,6 +219,140 @@
   border: none;
 }
 
+.videoOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(10, 10, 12, 0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 3vw, 32px);
+  animation: fadeIn 0.35s ease;
+}
+
+.videoDialog {
+  position: relative;
+  width: min(96vw, 1320px);
+}
+
+.videoClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  color: rgba(245, 245, 245, 0.7);
+  background: rgba(10, 10, 12, 0.5);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.videoClose:hover {
+  color: var(--text-primary);
+  background: rgba(10, 10, 12, 0.75);
+}
+
+.videoClose svg {
+  width: 22px;
+  height: 22px;
+}
+
+.videoFrame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 22px;
+  background: #050506;
+  box-shadow: 0 28px 100px rgba(0, 0, 0, 0.45);
+}
+
+.modalVideo {
+  display: block;
+  width: 100%;
+  max-height: calc(100vh - 180px);
+  background: #050506;
+}
+
+.centerPlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: 84px;
+  height: 84px;
+  border-radius: 999px;
+  background: rgba(245, 245, 245, 0.94);
+  color: #0A0A0C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.2);
+}
+
+.centerPlay svg {
+  width: 30px;
+  height: 30px;
+  margin-left: 3px;
+}
+
+.videoControls {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 8px 0;
+}
+
+.videoMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.videoClient {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.videoTitle {
+  font-size: clamp(1.125rem, 2vw, 1.5rem);
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.videoActions {
+  display: flex;
+  gap: 12px;
+}
+
+.controlBtn {
+  min-width: 92px;
+  height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(245, 245, 245, 0.12);
+  border-radius: 999px;
+  color: var(--text-primary);
+  background: rgba(245, 245, 245, 0.06);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.controlBtn:hover {
+  background: rgba(245, 245, 245, 0.12);
+  border-color: rgba(245, 245, 245, 0.2);
+}
+
 @keyframes fadeIn {
   from { opacity: 0 }
   to { opacity: 1 }
@@ -231,5 +361,37 @@
 @media (max-width: 640px) {
   .panelNumber {
     right: 16px;
+  }
+
+  .videoDialog {
+    width: 100%;
+  }
+
+  .modalVideo {
+    max-height: calc(100vh - 220px);
+  }
+
+  .centerPlay {
+    width: 68px;
+    height: 68px;
+  }
+
+  .centerPlay svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .videoControls {
+    flex-direction: column;
+    align-items: stretch;
+    padding-top: 16px;
+  }
+
+  .videoActions {
+    width: 100%;
+  }
+
+  .controlBtn {
+    flex: 1;
   }
 }

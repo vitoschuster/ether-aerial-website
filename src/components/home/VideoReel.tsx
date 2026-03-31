@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react'
 import type { Project } from '@/data/projects'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import VideoPanel from './VideoPanel'
 import styles from './VideoReel.module.css'
 
@@ -20,9 +21,7 @@ function ReelIndicator({
 }) {
   return (
     <nav className={styles.indicator} aria-label="Reel navigation">
-      {/* Connecting track line */}
       <div className={styles.indicatorTrack} />
-
       {projects.map((project, i) => (
         <button
           key={i}
@@ -30,13 +29,8 @@ function ReelIndicator({
           onClick={() => onSelect(i)}
           aria-label={`Jump to ${project.title}`}
         >
-          {/* Left: client name */}
-          <span className={styles.indicatorLabel}>{project.client}</span>
-
-          {/* Center: pill marker */}
+          <span className={styles.indicatorLabel}>{project.reelLabel ?? project.client}</span>
           <span className={styles.indicatorPill} />
-
-          {/* Right: number */}
           <span className={styles.indicatorNum}>
             {String(i + 1).padStart(2, '0')}
           </span>
@@ -48,11 +42,17 @@ function ReelIndicator({
 
 export default function VideoReel({ projects }: Props) {
   const [activeIndex, setActiveIndex] = useState(0)
+  const hasPointer = useMediaQuery('(hover: hover) and (pointer: fine)')
 
   const scrollToPanel = useCallback((index: number) => {
     const el = document.getElementById(`panel-${index}`)
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
+
+  const handleSelect = useCallback((index: number) => {
+    setActiveIndex(index)
+    scrollToPanel(index)
+  }, [scrollToPanel])
 
   return (
     <div className={styles.reel}>
@@ -62,14 +62,16 @@ export default function VideoReel({ projects }: Props) {
           project={project}
           index={i}
           total={projects.length}
-          onBecomeActive={() => setActiveIndex(i)}
+          isActive={i === activeIndex}
+          onPointerEnter={() => { if (hasPointer) setActiveIndex(i) }}
+          onBecomeVisible={() => { if (!hasPointer) setActiveIndex(i) }}
         />
       ))}
 
       <ReelIndicator
         projects={projects}
         activeIndex={activeIndex}
-        onSelect={scrollToPanel}
+        onSelect={handleSelect}
       />
     </div>
   )

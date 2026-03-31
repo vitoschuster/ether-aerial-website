@@ -1,10 +1,16 @@
 .card {
   display: block;
-  grid-column: span 1;
+  grid-column: span 2;
 }
 
-.wide {
-  grid-column: span 2;
+/* Wide card aligned to left side (spans 4 of 6 cols) */
+.wideLeft {
+  grid-column: span 4;
+}
+
+/* Wide card aligned to right side (cols 3–6) */
+.wideRight {
+  grid-column: 3 / span 4;
 }
 
 .thumb {
@@ -14,7 +20,8 @@
   background: var(--bg-elevated);
 }
 
-.wide .thumb {
+.wideLeft .thumb,
+.wideRight .thumb {
   aspect-ratio: 16 / 9;
 }
 
@@ -27,7 +34,7 @@
   transform: scale(1.04);
 }
 
-/* Gradient overlay — always present, stronger on hover */
+/* Gradient overlay */
 .overlay {
   position: absolute;
   inset: 0;
@@ -64,7 +71,8 @@
   line-height: 1.2;
 }
 
-.wide .title {
+.wideLeft .title,
+.wideRight .title {
   font-size: clamp(1rem, 2vw, 1.5rem);
 }
 
@@ -79,13 +87,24 @@
   z-index: 1;
 }
 
-@media (max-width: 768px) {
+/* Tablet: 4-column grid → wide=span 4, normal=span 2 */
+@media (max-width: 900px) {
+  .wideLeft,
+  .wideRight {
+    grid-column: span 4;
+  }
+}
+
+/* Mobile: 2-column grid → everything spans full row */
+@media (max-width: 560px) {
   .card,
-  .wide {
+  .wideLeft,
+  .wideRight {
     grid-column: span 1;
   }
 
-  .wide .thumb {
+  .wideLeft .thumb,
+  .wideRight .thumb {
     aspect-ratio: 4 / 3;
   }
 }

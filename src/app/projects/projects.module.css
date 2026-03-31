@@ -36,22 +36,24 @@
   letter-spacing: 0.08em;
 }
 
-/* Bento grid — 3 columns, some cards span 2 */
+/* Bento grid — 6 columns, cards span 2, wide cards span 4 */
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 10px;
 }
 
+/* Tablet: 4-column grid */
 @media (max-width: 900px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
+/* Mobile: 2-column grid */
 @media (max-width: 560px) {
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
 

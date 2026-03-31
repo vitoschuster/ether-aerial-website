@@ -32,7 +32,7 @@ export const services: Service[] = [
     specs: [
       'Full-frame Zenmuse X9-8K sensor',
       '8K CinemaDNG / Apple ProRes',
-      'Up to 75.6 mph / 120 km/h',
+      'Up to 120 km/h',
       'Stabilized 3-axis gimbal',
       'Dual-operator mode',
     ],
@@ -52,20 +52,5 @@ export const services: Service[] = [
       'Proximity specialist',
     ],
     image: '/images/drones/siccario-fpv.png',
-  },
-  {
-    slug: 'racing-fpv',
-    title: 'Racing FPV',
-    subtitle: 'Pure adrenaline. On camera.',
-    description:
-      'For clients who need the impossible shot — threading through gaps, matching vehicle speed, or capturing stunts from centimeters away. Our racing FPV pilots have years of competition experience translated into cinematic work.',
-    specs: [
-      'Custom 5" racing quad',
-      'GoPro HERO12 / Naked HERO',
-      '160+ km/h top speed',
-      'Sub-100g micro options available',
-      'Event & competition ready',
-    ],
-    image: '/images/drones/qav-pro-lifter.png',
   },
 ]

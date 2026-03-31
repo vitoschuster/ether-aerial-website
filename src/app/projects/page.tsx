@@ -8,6 +8,14 @@ export const metadata: Metadata = {
   description: 'Browse all aerial cinematography projects by Ether Aerial.',
 }
 
+function getCardType(i: number): 'normal' | 'wide-left' | 'wide-right' {
+  // Every 10 cards: position 0 = wide-left, position 6 = wide-right
+  const pos = i % 10
+  if (pos === 0) return 'wide-left'
+  if (pos === 6) return 'wide-right'
+  return 'normal'
+}
+
 export default function ProjectsPage() {
   return (
     <main className={styles.page}>
@@ -19,11 +27,10 @@ export default function ProjectsPage() {
 
       <div className={styles.grid}>
         {projects.map((project, i) => (
-          // Every 5th card (0, 5, 10, 15...) is wide (span 2)
           <BentoCard
             key={project.slug}
             project={project}
-            wide={i % 5 === 0}
+            cardType={getCardType(i)}
           />
         ))}
       </div>

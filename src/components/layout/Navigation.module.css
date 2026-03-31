@@ -5,9 +5,16 @@
   right: 0;
   z-index: 100;
   height: var(--nav-height);
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 10, 12, 0.44) 0%,
+    rgba(10, 10, 12, 0.18) 58%,
+    rgba(10, 10, 12, 0) 100%
+  );
   transition:
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    background 0.4s ease;
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.4s ease,
+    backdrop-filter 0.4s ease;
 }
 
 .navHidden {
@@ -24,20 +31,54 @@
   margin: 0 auto;
 }
 
+/* Logo: icon + text */
 .logo {
   display: flex;
   align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.logoIcon {
+  width: auto;
+  height: 34px;
   flex-shrink: 0;
 }
 
-.logo img {
-  height: 36px;
-  width: auto;
+.logoText {
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  white-space: nowrap;
 }
 
-/* Hamburger */
-.burger {
+/* Desktop nav links */
+.links {
   display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.link {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.link:hover,
+.linkActive {
+  color: var(--text-primary);
+}
+
+/* Hamburger — tablet + mobile only */
+.burger {
+  display: none;
   flex-direction: column;
   justify-content: center;
   gap: 7px;
@@ -52,13 +93,14 @@
   height: 1px;
   background: var(--text-primary);
   transition:
-    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     width 0.3s ease;
   transform-origin: center;
 }
 
 .burger span:last-child {
   width: 60%;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), width 0.3s ease;
 }
 
 .burger:hover span:last-child {
@@ -70,11 +112,11 @@
 }
 
 .burgerOpen span:last-child {
-  width: 100%;
+  width: 100% !important;
   transform: translateY(-4px) rotate(-45deg);
 }
 
-/* Full-screen menu */
+/* ─── Full-screen overlay menu ─── */
 .menu {
   position: fixed;
   inset: 0;
@@ -86,7 +128,7 @@
   padding: var(--space-3xl) var(--side-padding) var(--space-xl);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .menuOpen {
@@ -97,7 +139,7 @@
 .menuLinks {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .menuLink {
@@ -107,14 +149,14 @@
   font-size: clamp(2.5rem, 8vw, 5rem);
   font-weight: 300;
   letter-spacing: -0.02em;
-  color: rgba(245, 245, 245, 0.15);
+  color: rgba(245, 245, 245, 0.12);
   line-height: 1.1;
+  opacity: 0;
+  transform: translateY(24px);
   transition:
     color 0.3s ease,
-    opacity 0.4s ease,
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-  opacity: 0;
-  transform: translateY(20px);
 }
 
 .menuOpen .menuLink {
@@ -128,16 +170,15 @@
 }
 
 .menuNum {
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   font-weight: 500;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
   color: var(--text-muted);
-  flex-shrink: 0;
   align-self: center;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
+  flex-shrink: 0;
 }
 
-/* Footer in menu */
 .menuFooter {
   position: absolute;
   bottom: var(--space-xl);
@@ -146,7 +187,7 @@
   flex-direction: column;
   gap: var(--space-xs);
   opacity: 0;
-  transition: opacity 0.4s ease 0.3s;
+  transition: opacity 0.4s ease 0.35s;
 }
 
 .menuOpen .menuFooter {
@@ -174,4 +215,23 @@
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+}
+
+.menuSocials a:hover {
+  color: var(--text-secondary);
+}
+
+/* ─── Breakpoints ─── */
+
+/* Tablet + mobile: hide desktop links, show hamburger */
+@media (max-width: 1023px) {
+  .links {
+    display: none;
+  }
+
+  .burger {
+    display: flex;
+  }
 }

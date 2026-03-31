@@ -1,7 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { useEffect, useRef, useState } from 'react'
 import type { Project } from '@/data/projects'
 import styles from './VideoPanel.module.css'
 
@@ -9,64 +8,124 @@ interface Props {
   project: Project
   index: number
   total: number
-  onBecomeActive: () => void
+  /** VideoReel drives this — panel is "on" when true */
+  isActive: boolean
+  /** Called on mouseenter — VideoReel decides whether to act on it */
+  onPointerEnter: () => void
+  /** Called when panel crosses 50% of viewport — VideoReel decides whether to act on it */
+  onBecomeVisible: () => void
 }
 
-export default function VideoPanel({ project, index, onBecomeActive }: Props) {
+export default function VideoPanel({
+  project,
+  index,
+  isActive,
+  onPointerEnter,
+  onBecomeVisible,
+}: Props) {
   const panelRef = useRef<HTMLElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const callbackRef = useRef(onBecomeActive)
-  const [inView, setInView] = useState(false)
-  const [hovered, setHovered] = useState(false)
+  const modalVideoRef = useRef<HTMLVideoElement>(null)
   const [ytOpen, setYtOpen] = useState(false)
+  const [videoOpen, setVideoOpen] = useState(false)
+  const [modalPlaying, setModalPlaying] = useState(true)
+  const [modalMuted, setModalMuted] = useState(false)
 
-  // Keep callback ref stable so IntersectionObserver effect doesn't re-run
-  useEffect(() => { callbackRef.current = onBecomeActive })
+  // Stable ref for the callback — IntersectionObserver re-creates only on mount
+  const onBecomeVisibleRef = useRef(onBecomeVisible)
+  useEffect(() => { onBecomeVisibleRef.current = onBecomeVisible })
 
-  // Detect pointer capability (desktop vs touch) — false until hydrated
-  const hasPointer = useMediaQuery('(hover: hover) and (pointer: fine)')
+  // Video play / pause — driven entirely by isActive
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !project.videoSrc) return
+    if (isActive) {
+      video.play().catch(() => {})
+    } else {
+      video.pause()
+      // Don't reset currentTime — resume from where it was paused
+    }
+  }, [isActive, project.videoSrc])
 
-  // IntersectionObserver — triggers mobile autoplay + active index tracking
+  // IntersectionObserver — fires onBecomeVisible (VideoReel uses it for mobile only)
   useEffect(() => {
     const el = panelRef.current
     if (!el) return
     const observer = new IntersectionObserver(
       ([entry]) => {
-        const visible = entry.isIntersecting
-        setInView(visible)
-        if (visible) callbackRef.current()
+        if (entry.isIntersecting) onBecomeVisibleRef.current()
       },
-      { threshold: 0.55 }
+      { threshold: 0.5 }
     )
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
 
-  // Video play / pause
   useEffect(() => {
-    const video = videoRef.current
-    if (!video || !project.videoSrc) return
-    const shouldPlay = hasPointer ? hovered : inView
-    if (shouldPlay) {
-      video.play().catch(() => {})
-    } else {
-      video.pause()
-    }
-  }, [hovered, inView, hasPointer, project.videoSrc])
+    const video = modalVideoRef.current
+    if (!videoOpen || !video) return
 
-  const handlePlay = useCallback(() => {
+    video.currentTime = 0
+    video.muted = modalMuted
+    video.play().then(() => {
+      setModalPlaying(true)
+    }).catch(() => {
+      setModalPlaying(false)
+    })
+  }, [videoOpen, modalMuted])
+
+  useEffect(() => {
+    const video = modalVideoRef.current
+    if (!video) return
+    video.muted = modalMuted
+  }, [modalMuted])
+
+  const closeVideo = () => {
+    const video = modalVideoRef.current
+    video?.pause()
+    setVideoOpen(false)
+    setModalPlaying(false)
+  }
+
+  const toggleModalPlayback = () => {
+    const video = modalVideoRef.current
+    if (!video) return
+
+    if (video.paused) {
+      video.play().then(() => setModalPlaying(true)).catch(() => {})
+      return
+    }
+
+    video.pause()
+    setModalPlaying(false)
+  }
+
+  useEffect(() => {
+    if (!videoOpen && !ytOpen) return
+    document.body.style.overflow = 'hidden'
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setYtOpen(false)
+        closeVideo()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [videoOpen, ytOpen])
+
+  const handlePlay = () => {
     if (project.youtubeId) {
       setYtOpen(true)
       return
     }
-    const video = videoRef.current
-    if (!video) return
-    if (video.requestFullscreen) {
-      video.requestFullscreen()
-    } else {
-      (video as HTMLVideoElement & { webkitRequestFullscreen: () => void }).webkitRequestFullscreen?.()
+    if (project.videoSrc) {
+      setModalMuted(false)
+      setVideoOpen(true)
     }
-  }, [project.youtubeId])
+  }
 
   const panelNumber = String(index + 1).padStart(2, '0')
 
@@ -74,11 +133,10 @@ export default function VideoPanel({ project, index, onBecomeActive }: Props) {
     <section
       ref={panelRef}
       id={`panel-${index}`}
-      className={styles.panel}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className={`${styles.panel} ${isActive ? styles.panelActive : ''}`}
+      onMouseEnter={onPointerEnter}
     >
-      {/* Video — no poster, intentional dark start */}
+      {/* Video — no poster, dark gradient background is intentional */}
       {project.videoSrc && (
         <video
           ref={videoRef}
@@ -98,13 +156,11 @@ export default function VideoPanel({ project, index, onBecomeActive }: Props) {
       {/* Panel number */}
       <span className={styles.panelNumber}>{panelNumber}</span>
 
-      {/* Meta — CSS handles show/hide via :hover for pointer, always-on for touch */}
+      {/* Meta — CSS drives visibility via :hover and .panelActive */}
       <div className={styles.meta}>
         <p className={styles.client}>{project.client}</p>
         <h2 className={styles.title}>{project.title}</h2>
-        {project.credits && (
-          <p className={styles.credits}>{project.credits}</p>
-        )}
+        {project.credits && <p className={styles.credits}>{project.credits}</p>}
       </div>
 
       {/* Play button */}
@@ -118,7 +174,7 @@ export default function VideoPanel({ project, index, onBecomeActive }: Props) {
         </svg>
       </button>
 
-      {/* YouTube fullscreen overlay */}
+      {/* YouTube overlay */}
       {ytOpen && project.youtubeId && (
         <div className={styles.ytOverlay} onClick={() => setYtOpen(false)}>
           <button className={styles.ytClose} onClick={() => setYtOpen(false)} aria-label="Close">
@@ -133,6 +189,62 @@ export default function VideoPanel({ project, index, onBecomeActive }: Props) {
               allowFullScreen
               title={project.title}
             />
+          </div>
+        </div>
+      )}
+
+      {videoOpen && project.videoSrc && (
+        <div className={styles.videoOverlay} onClick={closeVideo}>
+          <div className={styles.videoDialog} onClick={(e) => e.stopPropagation()}>
+            <button className={styles.videoClose} onClick={closeVideo} aria-label="Close">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div className={styles.videoFrame}>
+              <video
+                ref={modalVideoRef}
+                className={styles.modalVideo}
+                src={project.videoSrc}
+                playsInline
+                preload="metadata"
+                onPlay={() => setModalPlaying(true)}
+                onPause={() => setModalPlaying(false)}
+                onClick={toggleModalPlayback}
+              />
+
+              {!modalPlaying && (
+                <button
+                  className={styles.centerPlay}
+                  onClick={toggleModalPlayback}
+                  aria-label={`Resume ${project.title}`}
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5.14v14l11-7-11-7z" />
+                  </svg>
+                </button>
+              )}
+            </div>
+
+            <div className={styles.videoControls}>
+              <div className={styles.videoMeta}>
+                <p className={styles.videoClient}>{project.client}</p>
+                <h3 className={styles.videoTitle}>{project.title}</h3>
+              </div>
+
+              <div className={styles.videoActions}>
+                <button className={styles.controlBtn} onClick={toggleModalPlayback}>
+                  {modalPlaying ? 'Pause' : 'Play'}
+                </button>
+                <button
+                  className={styles.controlBtn}
+                  onClick={() => setModalMuted((current) => !current)}
+                >
+                  {modalMuted ? 'Unmute' : 'Mute'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

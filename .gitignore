@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local video symlinks — do not commit
+/public/videos/
+
+# local source media exports — do not commit
+/*.mp4
+/*.mov
+/*.webm
+/*.m4v
+/*.avi

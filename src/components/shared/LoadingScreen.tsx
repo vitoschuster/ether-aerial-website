@@ -10,45 +10,50 @@ export default function LoadingScreen() {
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    const t = setTimeout(() => setGone(true), 2200)
+    const t = setTimeout(() => setGone(true), 2400)
     return () => clearTimeout(t)
   }, [])
 
-  const onExitComplete = () => {
-    document.body.style.overflow = ''
-  }
-
   return (
-    <AnimatePresence onExitComplete={onExitComplete}>
+    <AnimatePresence onExitComplete={() => { document.body.style.overflow = '' }}>
       {!gone && (
         <motion.div
           className={styles.screen}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
         >
-          {/* Logo */}
+          {/* Icon */}
           <motion.div
-            className={styles.logo}
-            initial={{ opacity: 0, y: 28 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.85, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
             <Image
-              src="/images/logo-white.png"
+              src="/images/logo-icon-white.png"
               alt="Ether Aerial"
-              width={220}
-              height={56}
+              width={64}
+              height={64}
               priority
+              className={styles.icon}
             />
           </motion.div>
 
-          {/* Animated underline */}
+          <motion.p
+            className={styles.brand}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          >
+            ETHER AERIAL.
+          </motion.p>
+
+          {/* Underline draw */}
           <motion.div
             className={styles.line}
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            transition={{ duration: 0.7, delay: 0.75, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.75, delay: 0.85, ease: [0.22, 1, 0.36, 1] }}
           />
 
           {/* Tagline */}
@@ -56,7 +61,7 @@ export default function LoadingScreen() {
             className={styles.tagline}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 1.1 }}
+            transition={{ duration: 0.6, delay: 1.3 }}
           >
             Aerial Cinematography
           </motion.p>

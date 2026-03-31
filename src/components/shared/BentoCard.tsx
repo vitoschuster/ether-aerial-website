@@ -3,23 +3,32 @@ import Image from 'next/image'
 import type { Project } from '@/data/projects'
 import styles from './BentoCard.module.css'
 
+type CardType = 'normal' | 'wide-left' | 'wide-right'
+
 interface Props {
   project: Project
-  wide?: boolean
+  cardType?: CardType
 }
 
-export default function BentoCard({ project, wide }: Props) {
+export default function BentoCard({ project, cardType = 'normal' }: Props) {
+  const typeClass =
+    cardType === 'wide-left' ? styles.wideLeft
+    : cardType === 'wide-right' ? styles.wideRight
+    : ''
+
+  const isWide = cardType !== 'normal'
+
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className={`${styles.card} ${wide ? styles.wide : ''}`}
+      className={`${styles.card} ${typeClass}`}
     >
       <div className={styles.thumb}>
         <Image
           src={project.poster}
           alt={project.title}
           fill
-          sizes={wide
+          sizes={isWide
             ? '(max-width: 768px) 100vw, 66vw'
             : '(max-width: 768px) 100vw, 33vw'
           }

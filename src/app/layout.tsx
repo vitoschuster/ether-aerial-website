@@ -1,17 +1,11 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import LoadingScreen from '@/components/shared/LoadingScreen'
 import './globals.css'
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-})
-
 export const metadata: Metadata = {
+  metadataBase: new URL('https://etheraerial.com'),
   title: {
     default: 'Ether Aerial — Cinematic Drone Cinematography',
     template: '%s | Ether Aerial',
@@ -39,7 +33,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en">
       <body>
         <LoadingScreen />
         <Navigation />
