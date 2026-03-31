@@ -9,6 +9,9 @@
 
 .header {
   margin-bottom: var(--space-xl);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-lg);
 }
 
 .eyebrow {
@@ -17,7 +20,6 @@
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: var(--space-sm);
 }
 
 .heading {
@@ -27,20 +29,38 @@
   color: var(--text-primary);
 }
 
+.count {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  margin-left: auto;
+  letter-spacing: 0.08em;
+}
+
+/* Bento grid — 3 columns, some cards span 2 */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-lg) var(--space-md);
+  gap: 10px;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 560px) {
   .grid {
     grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .header {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .count {
+    margin-left: 0;
   }
 }

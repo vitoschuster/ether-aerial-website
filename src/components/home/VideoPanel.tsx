@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import type { Project } from '@/data/projects'
 import styles from './VideoPanel.module.css'
 
@@ -8,25 +9,52 @@ interface Props {
   project: Project
   index: number
   total: number
-  isActive: boolean
+  onBecomeActive: () => void
 }
 
-export default function VideoPanel({ project, index, total, isActive }: Props) {
+export default function VideoPanel({ project, index, onBecomeActive }: Props) {
+  const panelRef = useRef<HTMLElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const callbackRef = useRef(onBecomeActive)
+  const [inView, setInView] = useState(false)
+  const [hovered, setHovered] = useState(false)
   const [ytOpen, setYtOpen] = useState(false)
 
-  // Play/pause based on which panel is active in the reel
+  // Keep callback ref stable so IntersectionObserver effect doesn't re-run
+  useEffect(() => { callbackRef.current = onBecomeActive })
+
+  // Detect pointer capability (desktop vs touch) — false until hydrated
+  const hasPointer = useMediaQuery('(hover: hover) and (pointer: fine)')
+
+  // IntersectionObserver — triggers mobile autoplay + active index tracking
+  useEffect(() => {
+    const el = panelRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const visible = entry.isIntersecting
+        setInView(visible)
+        if (visible) callbackRef.current()
+      },
+      { threshold: 0.55 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  // Video play / pause
   useEffect(() => {
     const video = videoRef.current
-    if (!video) return
-    if (isActive) {
+    if (!video || !project.videoSrc) return
+    const shouldPlay = hasPointer ? hovered : inView
+    if (shouldPlay) {
       video.play().catch(() => {})
     } else {
       video.pause()
     }
-  }, [isActive])
+  }, [hovered, inView, hasPointer, project.videoSrc])
 
-  const handlePlay = () => {
+  const handlePlay = useCallback(() => {
     if (project.youtubeId) {
       setYtOpen(true)
       return
@@ -35,31 +63,31 @@ export default function VideoPanel({ project, index, total, isActive }: Props) {
     if (!video) return
     if (video.requestFullscreen) {
       video.requestFullscreen()
-    } else if ((video as any).webkitRequestFullscreen) {
-      (video as any).webkitRequestFullscreen()
+    } else {
+      (video as HTMLVideoElement & { webkitRequestFullscreen: () => void }).webkitRequestFullscreen?.()
     }
-  }
+  }, [project.youtubeId])
 
   const panelNumber = String(index + 1).padStart(2, '0')
 
   return (
-    <section className={styles.panel}>
-      {/* Background video / poster */}
-      {project.videoSrc ? (
+    <section
+      ref={panelRef}
+      id={`panel-${index}`}
+      className={styles.panel}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Video — no poster, intentional dark start */}
+      {project.videoSrc && (
         <video
           ref={videoRef}
           className={styles.video}
           src={project.videoSrc}
-          poster={project.poster}
           muted
           loop
           playsInline
           preload="none"
-        />
-      ) : (
-        <div
-          className={styles.poster}
-          style={{ backgroundImage: `url(${project.poster})` }}
         />
       )}
 
@@ -67,10 +95,10 @@ export default function VideoPanel({ project, index, total, isActive }: Props) {
       <div className={styles.overlayBottom} />
       <div className={styles.overlayTop} />
 
-      {/* Panel number — top right */}
+      {/* Panel number */}
       <span className={styles.panelNumber}>{panelNumber}</span>
 
-      {/* Bottom left: client + title */}
+      {/* Meta — CSS handles show/hide via :hover for pointer, always-on for touch */}
       <div className={styles.meta}>
         <p className={styles.client}>{project.client}</p>
         <h2 className={styles.title}>{project.title}</h2>
@@ -79,22 +107,22 @@ export default function VideoPanel({ project, index, total, isActive }: Props) {
         )}
       </div>
 
-      {/* Center: play button */}
+      {/* Play button */}
       <button
         className={styles.playBtn}
         onClick={handlePlay}
         aria-label={`Play ${project.title}`}
       >
-        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M8 5.14v14l11-7-11-7z" />
         </svg>
       </button>
 
-      {/* YouTube overlay modal */}
+      {/* YouTube fullscreen overlay */}
       {ytOpen && project.youtubeId && (
         <div className={styles.ytOverlay} onClick={() => setYtOpen(false)}>
           <button className={styles.ytClose} onClick={() => setYtOpen(false)} aria-label="Close">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
           </button>

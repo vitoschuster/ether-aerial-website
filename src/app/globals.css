@@ -25,7 +25,7 @@
   --space-3xl: 168px;
 
   --max-width: 1400px;
-  --nav-height: 72px;
+  --nav-height: 80px;
   --side-padding: clamp(20px, 4vw, 80px);
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);

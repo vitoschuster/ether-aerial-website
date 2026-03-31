@@ -1,61 +1,72 @@
 .section {
-  padding: var(--space-xl) 0;
+  padding: var(--space-2xl) var(--side-padding);
   border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  overflow: hidden;
+  max-width: var(--max-width);
+  margin: 0 auto;
 }
 
 .label {
-  text-align: center;
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   font-weight: 500;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  text-align: center;
 }
 
-.track {
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 10%,
-    black 90%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 10%,
-    black 90%,
-    transparent 100%
-  );
-}
-
-.inner {
+.grid {
   display: flex;
-  gap: var(--space-2xl);
-  width: max-content;
-  animation: marquee 28s linear infinite;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-xl) var(--space-2xl);
 }
 
 .client {
-  font-size: clamp(0.875rem, 1.5vw, 1rem);
-  font-weight: 400;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  opacity: 0.6;
-  transition: opacity var(--duration-fast) var(--ease-out);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(245, 245, 245, 0.35);
+  transition: color 0.3s ease;
 }
 
 .client:hover {
-  opacity: 1;
+  color: rgba(245, 245, 245, 0.8);
 }
 
-@keyframes marquee {
-  from { transform: translateX(0) }
-  to { transform: translateX(-50%) }
+/* SVG icon logos (BMW, Opel, Pokémon GO) */
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.svgLogo {
+  width: 48px;
+  height: 48px;
+}
+
+/* Text wordmarks (Porsche, IDJ Videos, etc.) */
+.wordmark {
+  font-size: clamp(0.875rem, 1.5vw, 1.25rem);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .grid {
+    gap: var(--space-lg) var(--space-xl);
+  }
+
+  .svgLogo {
+    width: 38px;
+    height: 38px;
+  }
+
+  .wordmark {
+    font-size: 0.8125rem;
+  }
 }

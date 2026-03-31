@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import ProjectCard from '@/components/shared/ProjectCard'
-import { projects, categories } from '@/data/projects'
+import BentoCard from '@/components/shared/BentoCard'
+import { projects } from '@/data/projects'
 import styles from './projects.module.css'
 
 export const metadata: Metadata = {
@@ -14,11 +14,17 @@ export default function ProjectsPage() {
       <header className={styles.header}>
         <p className={styles.eyebrow}>Portfolio</p>
         <h1 className={styles.heading}>Projects</h1>
+        <p className={styles.count}>{projects.length} works</p>
       </header>
 
       <div className={styles.grid}>
-        {projects.map((project) => (
-          <ProjectCard key={project.slug} project={project} />
+        {projects.map((project, i) => (
+          // Every 5th card (0, 5, 10, 15...) is wide (span 2)
+          <BentoCard
+            key={project.slug}
+            project={project}
+            wide={i % 5 === 0}
+          />
         ))}
       </div>
     </main>

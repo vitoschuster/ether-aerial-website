@@ -1,0 +1,91 @@
+.card {
+  display: block;
+  grid-column: span 1;
+}
+
+.wide {
+  grid-column: span 2;
+}
+
+.thumb {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--bg-elevated);
+}
+
+.wide .thumb {
+  aspect-ratio: 16 / 9;
+}
+
+.img {
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover .img {
+  transform: scale(1.04);
+}
+
+/* Gradient overlay — always present, stronger on hover */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(10, 10, 12, 0.88) 0%,
+    rgba(10, 10, 12, 0.2) 50%,
+    transparent 100%
+  );
+  transition: opacity 0.4s ease;
+}
+
+/* Meta text — bottom left, always visible */
+.meta {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1;
+}
+
+.client {
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 5px;
+}
+
+.title {
+  font-size: clamp(0.875rem, 1.5vw, 1.125rem);
+  font-weight: 300;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.wide .title {
+  font-size: clamp(1rem, 2vw, 1.5rem);
+}
+
+/* Year — top right */
+.year {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 0.625rem;
+  letter-spacing: 0.15em;
+  color: rgba(245, 245, 245, 0.35);
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .card,
+  .wide {
+    grid-column: span 1;
+  }
+
+  .wide .thumb {
+    aspect-ratio: 4 / 3;
+  }
+}
