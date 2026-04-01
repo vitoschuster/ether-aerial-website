@@ -30,17 +30,19 @@ function r2(filename: string): string {
 
 export const projects: Project[] = [
   {
-    slug: 'showreel-2024',
-    title: 'Showreel 2024',
-    client: 'Ether Aerial',
-    reelLabel: 'Showreel',
+    // Placeholder — upload video to R2 as 'mcdonalds.mp4' and update videoSrc
+    slug: 'mcdonalds-ad',
+    title: 'McDonald\'s Commercial',
+    client: 'McDonald\'s',
+    reelLabel: 'McDonald\'s',
     year: 2024,
-    category: 'showreel',
-    poster: '/images/projects/maxresdefault-17.jpg',
-    videoSrc: r2('57 - fran_showreel_v1 2.mp4'),
-    description: 'A curated collection of the best aerial cinematography from 2024.',
+    category: 'commercial',
+    poster: '/images/projects/maxresdefault-31.jpg',
+    // videoSrc: r2('mcdonalds.mp4'),
+    description: 'Commercial aerial cinematography for McDonald\'s.',
     featured: true,
     reelOrder: 1,
+    credits: 'Aerial Cinematography',
   },
   {
     slug: 'bmw-m3-cs-touring',
@@ -71,6 +73,19 @@ export const projects: Project[] = [
     credits: 'Aerial Cinematography',
   },
   {
+    slug: 'showreel-2024',
+    title: 'Showreel 2024',
+    client: 'Ether Aerial',
+    reelLabel: 'Showreel',
+    year: 2024,
+    category: 'showreel',
+    poster: '/images/projects/maxresdefault-17.jpg',
+    videoSrc: r2('57 - fran_showreel_v1 2.mp4'),
+    description: 'A curated collection of the best aerial cinematography from 2024.',
+    featured: true,
+    reelOrder: 4,
+  },
+  {
     slug: 'bmw-m2-coupe',
     title: 'The New M2 Coupé',
     client: 'BMW',
@@ -81,7 +96,7 @@ export const projects: Project[] = [
     videoSrc: r2('55 - THE NEW BMW M2 COUPÉ..mp4'),
     description: 'Dynamic aerial cinematography showcasing the BMW M2 Coupé.',
     featured: true,
-    reelOrder: 4,
+    reelOrder: 5,
     credits: 'Director of Photography',
   },
   {
@@ -95,7 +110,7 @@ export const projects: Project[] = [
     videoSrc: r2('MOKKA GSE RALLY – A RIDE TO REMEMBER_2160p.mp4'),
     description: 'Adrenaline-fueled rally footage of the Opel Mokka GSE on gravel stages.',
     featured: true,
-    reelOrder: 5,
+    reelOrder: 6,
     credits: 'FPV Pilot & Cinematographer',
   },
   {
@@ -109,7 +124,7 @@ export const projects: Project[] = [
     videoSrc: r2('49 - juznivetar_bw.mp4'),
     description: 'Aerial cinematography for the major Balkan TV series Južni Vetar.',
     featured: true,
-    reelOrder: 6,
+    reelOrder: 7,
     credits: 'Aerial Director of Photography',
   },
   {
@@ -123,7 +138,7 @@ export const projects: Project[] = [
     videoSrc: r2('ADVENTURES GO ROUND_1080p.mp4'),
     description: 'Large-scale event aerial coverage for the Pokémon GO Fest Croatia.',
     featured: true,
-    reelOrder: 7,
+    reelOrder: 8,
     credits: 'Aerial Cinematography',
   },
   {

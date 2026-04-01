@@ -71,9 +71,14 @@
 
 /* SVG / image logos */
 .logoImg {
-  height: 26px;
+  height: 28px;
   width: auto;
   display: block;
+}
+
+/* Circular / square logos need extra height to appear visually balanced with text logos */
+.logoLg {
+  height: 38px;
 }
 
 /* Dark wordmark SVGs → pure white silhouette */
@@ -95,4 +100,23 @@
   text-transform: uppercase;
   color: rgba(245, 245, 245, 0.82);
   white-space: nowrap;
+}
+
+/* Mobile: all logos bigger — circular ones especially need the extra size */
+@media (max-width: 640px) {
+  .logoImg {
+    height: 36px;
+  }
+
+  .logoLg {
+    height: 50px;
+  }
+
+  .wordmark {
+    font-size: 0.9375rem;
+  }
+
+  .item {
+    padding: 0 40px;
+  }
 }
