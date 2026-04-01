@@ -7,24 +7,20 @@
   background: radial-gradient(ellipse at 60% 40%, #1c1c24 0%, #0A0A0C 70%);
 }
 
-/* Mobile: fill the full dynamic viewport (accounts for Safari/Chrome browser chrome) */
+/* Mobile: fill the full viewport.
+   100svh = small viewport height — a fixed value that never changes during scroll,
+   avoiding the layout reflow that 100dvh triggers as Safari chrome shows/hides. */
 @media (hover: none) or (pointer: coarse) {
   .panel {
-    height: 100dvh;
+    height: 100svh;
   }
 }
 
 .video {
-  /* Centering trick ensures 21:9 and any aspect-ratio video covers the panel on all browsers
-     including iOS Safari which may not respect object-fit on inline video */
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
