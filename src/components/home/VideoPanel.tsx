@@ -145,7 +145,7 @@ export default function VideoPanel({
           muted
           loop
           playsInline
-          preload="none"
+          preload={isActive ? 'auto' : 'none'}
         />
       )}
 

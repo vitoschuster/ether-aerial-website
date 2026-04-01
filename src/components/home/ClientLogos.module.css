@@ -73,10 +73,18 @@
 .logoImg {
   height: 26px;
   width: auto;
-  /* Force white — works for any dark/colored SVG */
+  display: block;
+}
+
+/* Dark wordmark SVGs → pure white silhouette */
+.logoInvert {
   filter: brightness(0) invert(1);
   opacity: 0.82;
-  display: block;
+}
+
+/* Color logos designed for dark backgrounds (BMW roundel, Pokémon GO) */
+.logoColor {
+  opacity: 0.85;
 }
 
 /* Text wordmarks for labels without a clean logo */

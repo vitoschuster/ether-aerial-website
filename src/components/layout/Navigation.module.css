@@ -67,7 +67,7 @@
   font-weight: 500;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: rgba(245, 245, 245, 0.72);
   transition: color 0.2s ease;
 }
 
