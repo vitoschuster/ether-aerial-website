@@ -20,14 +20,12 @@ export interface Project {
   credits?: string
 }
 
-const r2BaseUrl = process.env.NEXT_PUBLIC_R2_BASE_URL?.replace(/\/+$/, '')
+// Public R2 bucket — no secret, safe to hardcode. Override via env var if bucket changes.
+const R2 = 'https://pub-c8ba59ccdd244b3cb6828e1df4ab7931.r2.dev'
+const r2Base = (process.env.NEXT_PUBLIC_R2_BASE_URL ?? R2).replace(/\/+$/, '')
 
-function videoUrl(filename: string): string {
-  if (!r2BaseUrl) {
-    return `/videos/${filename}`
-  }
-
-  return `${r2BaseUrl}/${encodeURIComponent(filename)}`
+function r2(filename: string): string {
+  return `${r2Base}/${encodeURIComponent(filename)}`
 }
 
 export const projects: Project[] = [
@@ -39,7 +37,7 @@ export const projects: Project[] = [
     year: 2024,
     category: 'showreel',
     poster: '/images/projects/maxresdefault-17.jpg',
-    videoSrc: videoUrl('57 - fran_showreel_v1 2.mp4'),
+    videoSrc: r2('57 - fran_showreel_v1 2.mp4'),
     description: 'A curated collection of the best aerial cinematography from 2024.',
     featured: true,
     reelOrder: 1,
@@ -52,7 +50,7 @@ export const projects: Project[] = [
     year: 2023,
     category: 'automotive',
     poster: '/images/projects/maxresdefault-9.jpg',
-    videoSrc: videoUrl('51 - THE BMW M3 CS TOURING.mp4'),
+    videoSrc: r2('51 - THE BMW M3 CS TOURING.mp4'),
     description: 'High-speed aerial pursuit of the BMW M3 CS Touring through mountain roads.',
     featured: true,
     reelOrder: 2,
@@ -66,7 +64,7 @@ export const projects: Project[] = [
     year: 2023,
     category: 'automotive',
     poster: '/images/projects/maxresdefault-8.jpg',
-    videoSrc: videoUrl('56 - The new 911. The one and always..mp4'),
+    videoSrc: r2('56 - The new 911. The one and always..mp4'),
     description: 'The one and always. Cinematic drone footage of the iconic Porsche 911.',
     featured: true,
     reelOrder: 3,
@@ -80,7 +78,7 @@ export const projects: Project[] = [
     year: 2023,
     category: 'automotive',
     poster: '/images/projects/maxresdefault-7.jpg',
-    videoSrc: videoUrl('55 - THE NEW BMW M2 COUPÉ..mp4'),
+    videoSrc: r2('55 - THE NEW BMW M2 COUPÉ..mp4'),
     description: 'Dynamic aerial cinematography showcasing the BMW M2 Coupé.',
     featured: true,
     reelOrder: 4,
@@ -94,7 +92,7 @@ export const projects: Project[] = [
     year: 2024,
     category: 'automotive',
     poster: '/images/projects/maxresdefault-5.jpg',
-    videoSrc: videoUrl('MOKKA GSE RALLY – A RIDE TO REMEMBER_2160p.mp4'),
+    videoSrc: r2('MOKKA GSE RALLY – A RIDE TO REMEMBER_2160p.mp4'),
     description: 'Adrenaline-fueled rally footage of the Opel Mokka GSE on gravel stages.',
     featured: true,
     reelOrder: 5,
@@ -108,7 +106,7 @@ export const projects: Project[] = [
     year: 2023,
     category: 'film',
     poster: '/images/projects/maxresdefault-10.jpg',
-    videoSrc: videoUrl('49 - juznivetar_bw.mp4'),
+    videoSrc: r2('49 - juznivetar_bw.mp4'),
     description: 'Aerial cinematography for the major Balkan TV series Južni Vetar.',
     featured: true,
     reelOrder: 6,
@@ -122,7 +120,7 @@ export const projects: Project[] = [
     year: 2023,
     category: 'commercial',
     poster: '/images/projects/maxresdefault-6.jpg',
-    videoSrc: videoUrl('ADVENTURES GO ROUND_1080p.mp4'),
+    videoSrc: r2('ADVENTURES GO ROUND_1080p.mp4'),
     description: 'Large-scale event aerial coverage for the Pokémon GO Fest Croatia.',
     featured: true,
     reelOrder: 7,
@@ -190,7 +188,7 @@ export const projects: Project[] = [
     year: 2022,
     category: 'automotive',
     poster: '/images/projects/maxresdefault-7.jpg',
-    videoSrc: videoUrl('52 - bmw_2.mp4'),
+    videoSrc: r2('52 - bmw_2.mp4'),
     description: 'Aerial performance film for BMW.',
   },
   {
@@ -200,7 +198,7 @@ export const projects: Project[] = [
     year: 2022,
     category: 'automotive',
     poster: '/images/projects/maxresdefault-8.jpg',
-    videoSrc: videoUrl('53 - porsche.mp4'),
+    videoSrc: r2('53 - porsche.mp4'),
     description: 'Aerial performance film for Porsche.',
   },
   {
