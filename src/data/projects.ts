@@ -91,7 +91,7 @@ export const projects: Project[] = [
     reelLabel: 'Opel',
     year: 2024,
     category: 'automotive',
-    poster: '/images/projects/maxresdefault-5.jpg',
+    poster: '/images/projects/mokka-poster.jpg',
     videoSrc: r2('MOKKA GSE RALLY – A RIDE TO REMEMBER_2160p.mp4'),
     description: 'Adrenaline-fueled rally footage of the Opel Mokka GSE on gravel stages.',
     featured: true,
@@ -139,7 +139,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'voyage',
-    title: 'Lajala',
+    title: 'LalaLa',
     client: 'Voyage',
     year: 2023,
     category: 'music',
