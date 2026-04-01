@@ -45,7 +45,7 @@ export const projects: Project[] = [
     year: 2024,
     category: 'commercial',
     poster: '/images/projects/maxresdefault-31.jpg',
-    // videoSrc: r2('mcdonalds.mp4'), // uncomment when uploaded to R2
+    videoSrc: r2('McDonald\'s Hrvatska - McDelivery - McDonald\'s Hrvatska (1080p, h264).mp4'),
     vimeoId: '1179259721',
     description: 'Commercial aerial cinematography for McDonald\'s.',
     featured: true,
@@ -65,7 +65,7 @@ export const projects: Project[] = [
     description: 'High-speed aerial pursuit of the BMW M3 CS Touring through mountain roads.',
     featured: true,
     reelOrder: 2,
-    credits: 'Director of Photography',
+    credits: 'Aerial Cinematography',
   },
   {
     slug: 'porsche-911',
@@ -109,7 +109,7 @@ export const projects: Project[] = [
     description: 'Dynamic aerial cinematography showcasing the BMW M2 Coupé.',
     featured: true,
     reelOrder: 5,
-    credits: 'Director of Photography',
+    credits: 'Aerial Cinematography',
   },
   {
     slug: 'opel-mokka-gse-rally',
@@ -126,7 +126,7 @@ export const projects: Project[] = [
     reelOrder: 6,
     credits: 'FPV Pilot & Cinematographer',
     videoScale: 1.3,
-    videoScaleMobile: 1.3,
+    videoScaleMobile: 1.4,
   },
   {
     slug: 'juzni-vetar-na-granici',

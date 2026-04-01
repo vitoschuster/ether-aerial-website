@@ -36,16 +36,16 @@
 .track {
   display: flex;
   width: max-content;
-  animation: ticker 40s linear infinite;
+  animation: ticker 50s linear infinite;
 }
 
 .trackReverse {
-  animation: ticker-reverse 40s linear infinite;
+  animation: ticker-reverse 50s linear infinite;
 }
 
 /* Offset row 3 by half the cycle so it's visually staggered from row 1 */
 .trackOffset {
-  animation: ticker 40s linear infinite -20s;
+  animation: ticker 50s linear infinite -25s;
 }
 
 @keyframes ticker {

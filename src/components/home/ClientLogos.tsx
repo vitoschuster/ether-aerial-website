@@ -1,22 +1,33 @@
 import styles from './ClientLogos.module.css'
 
-// filter: 'invert' → brightness(0) invert(1) → renders as white silhouette (for dark logos)
-// filter: 'color'  → original brand colors / already works on dark bg (white SVGs, color marks)
+// filter: 'invert' → brightness(0) invert(1) → pure white silhouette (for dark logos on transparent bg)
+// filter: 'color'  → show original colors (for logos already white, light, or colored on transparent bg)
 // size: 'lg' → larger height for circular / square logos that look small at default height
+//
+// Verified pixel composition per logo (transparent / usable-color):
+//   toyota.svg    — white fill in SVG, shows correctly as-is (color)
+//   bmw.svg       — full-color roundel (color)
+//   mercedes.svg  — silver gradient (color)
+//   bentley.png   — 70% transparent, light/white logo (color)
+//   ina.png       — 67% transparent, red/orange (color)
+//   koncar.png    — 79% transparent, colored (color)
+//   idj-videos    — 81% transparent, colored (color)
+//   opel.svg      — dark logo → invert → white
+//   porsche.svg   — dark logo → invert → white
+//   mcdonalds.svg — golden arches, transparent bg (color)
+//   pokemon-go.svg— full-color (color)
 const LOGOS: { name: string; src?: string; filter?: 'invert' | 'color'; size?: 'lg' }[] = [
-  { name: 'McDonald\'s',      src: '/images/logos/mcdonalds-logo.svg', filter: 'color' },
-  { name: 'BMW',              src: '/images/logos/bmw.svg',            filter: 'color', size: 'lg' },
-  { name: 'Mercedes',         src: '/images/logos/mercedes-logo.svg',  filter: 'invert' },
-  { name: 'Porsche',          src: '/images/logos/porsche.svg',        filter: 'invert' },
-  { name: 'Toyota',           src: '/images/logos/toyota.svg',         filter: 'color' },
-  { name: 'Opel',             src: '/images/logos/opel.svg',           filter: 'invert' },
-  { name: 'Rimac',            src: '/images/logos/rimac.svg',          filter: 'invert' },
-  { name: 'Bentley',          src: '/images/logos/bentley.png',        filter: 'invert' },
-  { name: 'Pokémon GO',       src: '/images/logos/pokemon-go.svg',     filter: 'color', size: 'lg' },
-  { name: 'INA',              src: '/images/logos/ina.png',            filter: 'color' },
-  { name: 'Končar',           src: '/images/logos/koncar.png',         filter: 'invert' },
-  { name: 'IDJ Videos',       src: '/images/logos/idj-videos.webp',   filter: 'invert' },
-  { name: 'FAT International', src: '/images/logos/fat-international.png', filter: 'invert' },
+  { name: 'McDonald\'s', src: '/images/logos/mcdonalds-logo.svg', filter: 'color' },
+  { name: 'BMW',         src: '/images/logos/bmw.svg',            filter: 'color', size: 'lg' },
+  { name: 'Mercedes',    src: '/images/logos/mercedes-logo.svg',  filter: 'color' },
+  { name: 'Porsche',     src: '/images/logos/porsche.svg',        filter: 'invert' },
+  { name: 'Toyota',      src: '/images/logos/toyota.svg',         filter: 'color' },
+  { name: 'Opel',        src: '/images/logos/opel.svg',           filter: 'invert' },
+  { name: 'Bentley',     src: '/images/logos/bentley.png',        filter: 'color' },
+  { name: 'Pokémon GO',  src: '/images/logos/pokemon-go.svg',     filter: 'color', size: 'lg' },
+  { name: 'INA',         src: '/images/logos/ina.png',            filter: 'color' },
+  { name: 'Končar',      src: '/images/logos/koncar.png',         filter: 'color' },
+  { name: 'IDJ Videos',  src: '/images/logos/idj-videos.webp',   filter: 'color' },
   { name: 'Joop!' },
   { name: 'Južni Vetar' },
   { name: 'Balkaton' },
@@ -65,7 +76,7 @@ export default function ClientLogos() {
         <Track reverse />
       </div>
 
-      {/* Row 3 — mobile only, scrolls left (offset so it's not in sync with row 1) */}
+      {/* Row 3 — mobile only, scrolls left (−25s offset so it's staggered from row 1) */}
       <div className={`${styles.viewport} ${styles.viewportMobile}`}>
         <Track offset />
       </div>
