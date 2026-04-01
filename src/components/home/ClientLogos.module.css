@@ -1,72 +1,90 @@
 .section {
-  padding: var(--space-2xl) var(--side-padding);
   border-top: 1px solid var(--border);
-  max-width: var(--max-width);
-  margin: 0 auto;
+  padding: var(--space-xl) 0 var(--space-2xl);
 }
 
 .label {
-  font-size: 0.625rem;
+  font-size: 0.5625rem;
   font-weight: 500;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: var(--space-xl);
+  color: rgba(245, 245, 245, 0.3);
   text-align: center;
+  margin-bottom: var(--space-xl);
 }
 
-.grid {
+/* ─── Infinite ticker ─── */
+.viewport {
+  overflow: hidden;
+  /* Edge fade */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+}
+
+.track {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: var(--space-xl) var(--space-2xl);
+  width: max-content;
+  animation: ticker 40s linear infinite;
 }
 
-.client {
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
+}
+
+/* Each logo slot */
+.item {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(245, 245, 245, 0.35);
-  transition: color 0.3s ease;
+  padding: 0 52px;
+  flex-shrink: 0;
 }
 
-.client:hover {
-  color: rgba(245, 245, 245, 0.8);
+/* Divider dot between items */
+.item::after {
+  content: '·';
+  position: absolute;
+  right: 0;
+  color: rgba(245, 245, 245, 0.15);
+  font-size: 1rem;
+  pointer-events: none;
 }
 
-/* SVG icon logos (BMW, Opel, Pokémon GO) */
-.iconWrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* SVG / image logos */
+.logoImg {
+  height: 26px;
+  width: auto;
+  /* Force white — works for any dark/colored SVG */
+  filter: brightness(0) invert(1);
+  opacity: 0.82;
+  display: block;
 }
 
-.svgLogo {
-  width: 48px;
-  height: 48px;
-}
-
-/* Text wordmarks (Porsche, IDJ Videos, etc.) */
+/* Text wordmarks for labels without a clean logo */
 .wordmark {
-  font-size: clamp(0.875rem, 1.5vw, 1.25rem);
+  font-size: 0.8125rem;
   font-weight: 400;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
+  color: rgba(245, 245, 245, 0.82);
   white-space: nowrap;
-}
-
-@media (max-width: 640px) {
-  .grid {
-    gap: var(--space-lg) var(--space-xl);
-  }
-
-  .svgLogo {
-    width: 38px;
-    height: 38px;
-  }
-
-  .wordmark {
-    font-size: 0.8125rem;
-  }
 }

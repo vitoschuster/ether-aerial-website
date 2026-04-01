@@ -1,15 +1,10 @@
 .page {
-  padding-top: calc(var(--nav-height) + var(--space-xl));
+  padding-top: calc(var(--nav-height) + var(--space-2xl));
   padding-bottom: var(--space-3xl);
-  max-width: var(--max-width);
+  max-width: 900px;
   margin: 0 auto;
   padding-left: var(--side-padding);
   padding-right: var(--side-padding);
-}
-
-.header {
-  margin-bottom: var(--space-2xl);
-  max-width: 800px;
 }
 
 .eyebrow {
@@ -22,147 +17,80 @@
 }
 
 .heading {
-  font-size: clamp(2rem, 5vw, 3.75rem);
+  font-size: clamp(2.25rem, 5.5vw, 4rem);
   font-weight: 300;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
   color: var(--text-primary);
+  margin-bottom: var(--space-2xl);
 }
 
-/* Body */
+/* ─── Body row ─── */
 .body {
-  display: grid;
-  grid-template-columns: 1fr 280px;
+  display: flex;
+  align-items: flex-start;
   gap: var(--space-2xl);
-  align-items: start;
-  margin-bottom: var(--space-2xl);
   padding-bottom: var(--space-2xl);
   border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-2xl);
 }
 
-.textBlock {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-}
-
-.textBlock p {
-  font-size: clamp(1rem, 1.5vw, 1.125rem);
+.bio {
+  flex: 1;
+  font-size: clamp(1rem, 1.6vw, 1.125rem);
   font-weight: 300;
   line-height: 1.75;
   color: var(--text-secondary);
-  max-width: 60ch;
 }
 
-/* Stats */
 .stats {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xl);
+  gap: var(--space-lg);
+  flex-shrink: 0;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
-.statNumber {
-  font-size: clamp(2rem, 3vw, 2.75rem);
+.statNum {
+  font-size: 2.25rem;
   font-weight: 300;
-  color: var(--text-primary);
   letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1;
 }
 
 .statLabel {
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-/* ─── Editorial statement ─── */
-.statement {
-  padding: var(--space-2xl) 0;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: var(--space-2xl);
-  max-width: 760px;
-}
-
-.quote {
-  font-size: clamp(1.5rem, 3.5vw, 2.75rem);
-  font-weight: 300;
-  line-height: 1.25;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-  margin: 0 0 var(--space-lg);
-}
-
-.quoteAttr {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 
-/* ─── Approach pillars ─── */
-.pillars {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-xl);
-}
-
-.pillar {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-}
-
-.pillarNum {
-  font-size: 0.5625rem;
-  font-weight: 500;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.pillarTitle {
-  font-size: clamp(1rem, 1.5vw, 1.25rem);
+/* ─── Quote ─── */
+.quote {
+  font-size: clamp(1.25rem, 2.5vw, 1.875rem);
   font-weight: 300;
-  color: var(--text-primary);
-  line-height: 1.2;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: rgba(245, 245, 245, 0.45);
+  max-width: 680px;
 }
 
-.pillarText {
-  font-size: 0.875rem;
-  font-weight: 300;
-  line-height: 1.7;
-  color: var(--text-muted);
-}
-
-@media (max-width: 1024px) {
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
   .body {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    gap: var(--space-xl);
   }
 
   .stats {
     flex-direction: row;
     gap: var(--space-xl);
-  }
-
-  .pillars {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .stats {
-    flex-direction: column;
-  }
-
-  .pillars {
-    grid-template-columns: 1fr;
   }
 }
