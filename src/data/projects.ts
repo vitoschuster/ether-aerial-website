@@ -18,6 +18,8 @@ export interface Project {
   featured?: boolean
   reelOrder?: number
   credits?: string
+  /** Scale factor to crop burned-in letterbox bars (e.g. 1.33 for 2.35:1 in 16:9) */
+  videoScale?: number
 }
 
 // Public R2 bucket — no secret, safe to hardcode. Override via env var if bucket changes.
@@ -112,6 +114,7 @@ export const projects: Project[] = [
     featured: true,
     reelOrder: 6,
     credits: 'FPV Pilot & Cinematographer',
+    videoScale: 1.15, // ~5% letterbox bars each side
   },
   {
     slug: 'juzni-vetar-na-granici',
@@ -126,6 +129,7 @@ export const projects: Project[] = [
     featured: true,
     reelOrder: 7,
     credits: 'Aerial Director of Photography',
+    videoScale: 1.33, // ~12% letterbox bars each side
   },
   {
     slug: 'pokemon-go',
@@ -139,6 +143,7 @@ export const projects: Project[] = [
     description: 'Large-scale event aerial coverage for the Pokémon GO Fest Croatia.',
     featured: true,
     reelOrder: 8,
+    videoScale: 1.1, // ~3% letterbox bars each side
     credits: 'Aerial Cinematography',
   },
   {

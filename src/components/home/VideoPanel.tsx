@@ -146,6 +146,7 @@ export default function VideoPanel({
           loop
           playsInline
           preload={isActive ? 'auto' : 'none'}
+          style={project.videoScale ? { transform: `scale(${project.videoScale})` } : undefined}
         />
       )}
 
