@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import styles from './about.module.css'
 
 export const metadata: Metadata = {
@@ -41,10 +42,22 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <blockquote className={styles.quote}>
-        &ldquo;We don&apos;t just film from the air —
-        we find the angle that makes people stop.&rdquo;
-      </blockquote>
+      <div className={styles.quoteBlock}>
+        <blockquote className={styles.quote}>
+          &ldquo;We don&apos;t just film from the air —
+          we find the angle that makes people stop.&rdquo;
+        </blockquote>
+        <div className={styles.signature}>
+          <Image
+            src="/images/logo-icon-white.png"
+            alt="Ether Aerial"
+            width={28}
+            height={28}
+            className={styles.sigIcon}
+          />
+          <span className={styles.sigText}>Ether Aerial</span>
+        </div>
+      </div>
     </main>
   )
 }

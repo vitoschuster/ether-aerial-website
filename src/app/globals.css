@@ -68,6 +68,15 @@ img, video {
   display: block;
 }
 
+/* Safari shows a native overlay play button on <video> even without controls.
+   Hide it — we use our own play button UI. */
+video::-webkit-media-controls-overlay-play-button,
+video::-webkit-media-controls-start-playback-button,
+video::-webkit-media-controls-panel {
+  display: none !important;
+  -webkit-appearance: none;
+}
+
 button {
   background: none;
   border: none;
