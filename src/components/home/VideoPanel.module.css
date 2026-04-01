@@ -60,6 +60,48 @@
   z-index: 2;
 }
 
+/* ─── Focus line ─── */
+/* Thin vertical line on the left edge, aligned with logo and title.
+   Draws in (top → bottom) when panel is active, erases (top → nothing) on inactive. */
+.reelLine {
+  position: absolute;
+  left: var(--side-padding);
+  top: 22%;
+  height: 54%;
+  width: 1px;
+  background: var(--accent);
+  opacity: 0;
+  transform-origin: top;
+  transform: scaleY(0);
+  /* Fast erase when leaving */
+  transition:
+    transform 0.55s cubic-bezier(0.65, 0, 0.35, 1),
+    opacity 0.55s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Active panel (scroll-driven on mobile, hover+active on desktop) */
+.panelActive .reelLine {
+  opacity: 0.48;
+  transform: scaleY(1);
+  /* Slow draw-in */
+  transition:
+    transform 1.5s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 1.2s ease;
+}
+
+/* Desktop: also show on hover, using same slow draw-in */
+@media (hover: hover) and (pointer: fine) {
+  .panel:hover .reelLine {
+    opacity: 0.48;
+    transform: scaleY(1);
+    transition:
+      transform 1.5s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 1.2s ease;
+  }
+}
+
 /* ─── Meta ─── */
 .meta {
   position: absolute;

@@ -153,6 +153,9 @@ export default function VideoPanel({
       <div className={styles.overlayBottom} />
       <div className={styles.overlayTop} />
 
+      {/* Focus line — draws in from top when panel is active / hovered */}
+      <div className={styles.reelLine} aria-hidden="true" />
+
       {/* Panel number */}
       <span className={styles.panelNumber}>{panelNumber}</span>
 
