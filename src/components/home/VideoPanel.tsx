@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import type { Project } from '@/data/projects'
 import styles from './VideoPanel.module.css'
 
@@ -27,6 +27,7 @@ export default function VideoPanel({
   const videoRef = useRef<HTMLVideoElement>(null)
   const modalVideoRef = useRef<HTMLVideoElement>(null)
   const [ytOpen, setYtOpen] = useState(false)
+  const [vimeoOpen, setVimeoOpen] = useState(false)
   const [videoOpen, setVideoOpen] = useState(false)
   const [modalPlaying, setModalPlaying] = useState(true)
   const [modalMuted, setModalMuted] = useState(false)
@@ -38,14 +39,14 @@ export default function VideoPanel({
   // Video play / pause — driven entirely by isActive
   useEffect(() => {
     const video = videoRef.current
-    if (!video || !project.videoSrc) return
+    if (!video || (!project.videoSrc && !project.videoSrcWebm)) return
     if (isActive) {
       video.play().catch(() => {})
     } else {
       video.pause()
       // Don't reset currentTime — resume from where it was paused
     }
-  }, [isActive, project.videoSrc])
+  }, [isActive, project.videoSrc, project.videoSrcWebm])
 
   // IntersectionObserver — fires onBecomeVisible (VideoReel uses it for mobile only)
   useEffect(() => {
@@ -101,11 +102,12 @@ export default function VideoPanel({
   }
 
   useEffect(() => {
-    if (!videoOpen && !ytOpen) return
+    if (!videoOpen && !ytOpen && !vimeoOpen) return
     document.body.style.overflow = 'hidden'
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setYtOpen(false)
+        setVimeoOpen(false)
         closeVideo()
       }
     }
@@ -114,9 +116,13 @@ export default function VideoPanel({
       document.body.style.overflow = ''
       window.removeEventListener('keydown', onKeyDown)
     }
-  }, [videoOpen, ytOpen])
+  }, [videoOpen, ytOpen, vimeoOpen])
 
   const handlePlay = () => {
+    if (project.vimeoId) {
+      setVimeoOpen(true)
+      return
+    }
     if (project.youtubeId) {
       setYtOpen(true)
       return
@@ -137,17 +143,22 @@ export default function VideoPanel({
       onMouseEnter={onPointerEnter}
     >
       {/* Video — no poster, dark gradient background is intentional */}
-      {project.videoSrc && (
+      {(project.videoSrc || project.videoSrcWebm) && (
         <video
           ref={videoRef}
           className={styles.video}
-          src={project.videoSrc}
           muted
           loop
           playsInline
           preload={isActive ? 'auto' : 'none'}
-          style={project.videoScale ? { transform: `scale(${project.videoScale})` } : undefined}
-        />
+          style={(project.videoScale || project.videoScaleMobile) ? {
+            '--video-scale': project.videoScale ?? 1,
+            '--video-scale-mobile': project.videoScaleMobile ?? project.videoScale ?? 1,
+          } as CSSProperties : undefined}
+        >
+          {project.videoSrcWebm && <source src={project.videoSrcWebm} type="video/webm" />}
+          {project.videoSrc && <source src={project.videoSrc} type="video/mp4" />}
+        </video>
       )}
 
       {/* Gradient overlays */}
@@ -168,15 +179,37 @@ export default function VideoPanel({
       </div>
 
       {/* Play button */}
-      <button
-        className={styles.playBtn}
-        onClick={handlePlay}
-        aria-label={`Play ${project.title}`}
-      >
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M8 5.14v14l11-7-11-7z" />
-        </svg>
-      </button>
+      {(project.videoSrc || project.videoSrcWebm || project.vimeoId || project.youtubeId) && (
+        <button
+          className={styles.playBtn}
+          onClick={handlePlay}
+          aria-label={`Play ${project.title}`}
+        >
+          <svg className={styles.playIcon} viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="32" r="31" stroke="currentColor" strokeWidth="1.5" />
+            <path d="M27 22l16 10-16 10V22z" fill="currentColor" />
+          </svg>
+        </button>
+      )}
+
+      {/* Vimeo overlay */}
+      {vimeoOpen && project.vimeoId && (
+        <div className={styles.ytOverlay} onClick={() => setVimeoOpen(false)}>
+          <button className={styles.ytClose} onClick={() => setVimeoOpen(false)} aria-label="Close">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+          <div className={styles.ytWrapper} onClick={(e) => e.stopPropagation()}>
+            <iframe
+              src={`https://player.vimeo.com/video/${project.vimeoId}?autoplay=1&title=0&byline=0&portrait=0`}
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowFullScreen
+              title={project.title}
+            />
+          </div>
+        </div>
+      )}
 
       {/* YouTube overlay */}
       {ytOpen && project.youtubeId && (

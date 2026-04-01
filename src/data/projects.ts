@@ -9,8 +9,12 @@ export interface Project {
   year: number
   category: Category
   poster: string
-  /** Cloudflare R2 URL — uncomment when uploaded. Uses /videos/ symlink for local dev. */
+  /** Cloudflare R2 URL for autoplay background loop */
   videoSrc?: string
+  /** WebM version of videoSrc — served first for browsers that support it */
+  videoSrcWebm?: string
+  /** Vimeo video ID — click-to-play opens Vimeo overlay (priority over youtubeId) */
+  vimeoId?: string
   /** YouTube video ID for music videos on label channels */
   youtubeId?: string
   description?: string
@@ -20,6 +24,8 @@ export interface Project {
   credits?: string
   /** Scale factor to crop burned-in letterbox bars (e.g. 1.33 for 2.35:1 in 16:9) */
   videoScale?: number
+  /** Mobile-specific scale override — falls back to videoScale if omitted */
+  videoScaleMobile?: number
 }
 
 // Public R2 bucket — no secret, safe to hardcode. Override via env var if bucket changes.
@@ -32,7 +38,6 @@ function r2(filename: string): string {
 
 export const projects: Project[] = [
   {
-    // Placeholder — upload video to R2 as 'mcdonalds.mp4' and update videoSrc
     slug: 'mcdonalds-ad',
     title: 'McDonald\'s Commercial',
     client: 'McDonald\'s',
@@ -40,7 +45,8 @@ export const projects: Project[] = [
     year: 2024,
     category: 'commercial',
     poster: '/images/projects/maxresdefault-31.jpg',
-    // videoSrc: r2('mcdonalds.mp4'),
+    // videoSrc: r2('mcdonalds.mp4'), // uncomment when uploaded to R2
+    vimeoId: '1179259721',
     description: 'Commercial aerial cinematography for McDonald\'s.',
     featured: true,
     reelOrder: 1,
@@ -55,6 +61,7 @@ export const projects: Project[] = [
     category: 'automotive',
     poster: '/images/projects/maxresdefault-9.jpg',
     videoSrc: r2('51 - THE BMW M3 CS TOURING.mp4'),
+    vimeoId: '1179255325',
     description: 'High-speed aerial pursuit of the BMW M3 CS Touring through mountain roads.',
     featured: true,
     reelOrder: 2,
@@ -69,6 +76,7 @@ export const projects: Project[] = [
     category: 'automotive',
     poster: '/images/projects/maxresdefault-8.jpg',
     videoSrc: r2('56 - The new 911. The one and always..mp4'),
+    vimeoId: '1179258546',
     description: 'The one and always. Cinematic drone footage of the iconic Porsche 911.',
     featured: true,
     reelOrder: 3,
@@ -83,6 +91,7 @@ export const projects: Project[] = [
     category: 'showreel',
     poster: '/images/projects/maxresdefault-17.jpg',
     videoSrc: r2('57 - fran_showreel_v1 2.mp4'),
+    vimeoId: '1179261490',
     description: 'A curated collection of the best aerial cinematography from 2024.',
     featured: true,
     reelOrder: 4,
@@ -96,6 +105,7 @@ export const projects: Project[] = [
     category: 'automotive',
     poster: '/images/projects/maxresdefault-7.jpg',
     videoSrc: r2('55 - THE NEW BMW M2 COUPÉ..mp4'),
+    vimeoId: '1179253422',
     description: 'Dynamic aerial cinematography showcasing the BMW M2 Coupé.',
     featured: true,
     reelOrder: 5,
@@ -110,11 +120,13 @@ export const projects: Project[] = [
     category: 'automotive',
     poster: '/images/projects/mokka-poster.jpg',
     videoSrc: r2('MOKKA GSE RALLY – A RIDE TO REMEMBER_2160p.mp4'),
+    vimeoId: '1179260759',
     description: 'Adrenaline-fueled rally footage of the Opel Mokka GSE on gravel stages.',
     featured: true,
     reelOrder: 6,
     credits: 'FPV Pilot & Cinematographer',
-    videoScale: 1.15, // ~5% letterbox bars each side
+    videoScale: 1.3,
+    videoScaleMobile: 1.3,
   },
   {
     slug: 'juzni-vetar-na-granici',
@@ -125,11 +137,13 @@ export const projects: Project[] = [
     category: 'film',
     poster: '/images/projects/maxresdefault-10.jpg',
     videoSrc: r2('49 - juznivetar_bw.mp4'),
+    vimeoId: '1179258341',
     description: 'Aerial cinematography for the major Balkan TV series Južni Vetar.',
     featured: true,
     reelOrder: 7,
     credits: 'Aerial Director of Photography',
-    videoScale: 1.33, // ~12% letterbox bars each side
+    videoScale: 1.5,
+    videoScaleMobile: 1.4,
   },
   {
     slug: 'pokemon-go',
@@ -140,10 +154,12 @@ export const projects: Project[] = [
     category: 'commercial',
     poster: '/images/projects/maxresdefault-6.jpg',
     videoSrc: r2('ADVENTURES GO ROUND_1080p.mp4'),
+    vimeoId: '1179258698',
     description: 'Large-scale event aerial coverage for the Pokémon GO Fest Croatia.',
     featured: true,
     reelOrder: 8,
-    videoScale: 1.1, // ~3% letterbox bars each side
+    videoScale: 1.2,
+    videoScaleMobile: 1.4,
     credits: 'Aerial Cinematography',
   },
   {
@@ -219,6 +235,7 @@ export const projects: Project[] = [
     category: 'automotive',
     poster: '/images/projects/maxresdefault-8.jpg',
     videoSrc: r2('53 - porsche.mp4'),
+    vimeoId: '1179254949',
     description: 'Aerial performance film for Porsche.',
   },
   {

@@ -39,14 +39,42 @@
   animation: ticker 40s linear infinite;
 }
 
+.trackReverse {
+  animation: ticker-reverse 40s linear infinite;
+}
+
+/* Offset row 3 by half the cycle so it's visually staggered from row 1 */
+.trackOffset {
+  animation: ticker 40s linear infinite -20s;
+}
+
 @keyframes ticker {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
 
+@keyframes ticker-reverse {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .track {
+  .track,
+  .trackReverse,
+  .trackOffset {
     animation: none;
+  }
+}
+
+/* Rows 2 and 3 — mobile only */
+.viewportMobile {
+  display: none;
+  margin-top: 16px;
+}
+
+@media (hover: none) or (pointer: coarse) {
+  .viewportMobile {
+    display: block;
   }
 }
 

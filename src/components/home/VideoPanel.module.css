@@ -8,11 +8,12 @@
 }
 
 /* Mobile: fill the full viewport.
-   100svh = small viewport height — a fixed value that never changes during scroll,
-   avoiding the layout reflow that 100dvh triggers as Safari chrome shows/hides. */
+   100lvh = large (maximum) viewport height — stable, never reflows.
+   iOS 26 Liquid Glass: transparent chrome lets content show through,
+   so we want the largest stable height so panels fill edge-to-edge. */
 @media (hover: none) or (pointer: coarse) {
   .panel {
-    height: 100svh;
+    height: 100lvh;
   }
 }
 
@@ -22,6 +23,13 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: scale(var(--video-scale, 1));
+}
+
+@media (hover: none) or (pointer: coarse) {
+  .video {
+    transform: scale(var(--video-scale-mobile, var(--video-scale, 1)));
+  }
 }
 
 .overlayBottom {
@@ -145,57 +153,80 @@
   top: 50%;
   left: 50%;
   translate: -50% -50%;
-  width: 80px;
-  height: 80px;
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
-  background: #ffffff;
-  color: #0A0A0C;
+  background: rgba(10, 10, 12, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: rgba(245, 245, 245, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
   outline: none;
   z-index: 2;
+  transition:
+    background 0.3s ease,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.3s ease;
   /* Default: always visible */
 }
 
-.playBtn svg {
-  width: 32px;
-  height: 32px;
-  margin-left: 4px;
+.playIcon {
+  width: 76px;
+  height: 76px;
+  display: block;
 }
 
 .playBtn:hover {
-  transform: scale(1.1);
+  background: rgba(10, 10, 12, 0.36);
+  color: rgba(245, 245, 245, 1);
+  transform: scale(1.08);
 }
 
 .playBtn:active {
   transform: scale(0.94);
 }
 
-/* ─── Pointer devices: animate UI in/out ─── */
+/* ─── Meta & play button: animate in/out on all devices ─── */
+/* Hidden state — fast hide */
+.meta {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.playBtn {
+  opacity: 0;
+  transform: scale(0.78);
+  transition:
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Shown state — slow reveal (active panel, all devices) */
+.panelActive .meta {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 1.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.panelActive .playBtn {
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Desktop: also reveal on hover */
 @media (hover: hover) and (pointer: fine) {
-  /* Hidden state — fast hide (uses "after-change" transition: 0.7s) */
-  .meta {
-    opacity: 0;
-    transform: translateY(18px);
-    transition:
-      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .playBtn {
-    opacity: 0;
-    transform: scale(0.78);
-    transition:
-      opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  /* Shown state — slow reveal (uses "after-change" transition: 1.3s / 1.2s) */
-  /* Triggered by hover OR by panelActive class (initial-active panel) */
-  .panel:hover .meta,
-  .panelActive .meta {
+  .panel:hover .meta {
     opacity: 1;
     transform: translateY(0);
     transition:
@@ -203,8 +234,7 @@
       transform 1.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .panel:hover .playBtn,
-  .panelActive .playBtn {
+  .panel:hover .playBtn {
     opacity: 1;
     transform: scale(1);
     transition:
@@ -214,21 +244,21 @@
 
   /* Scale on hover of the button itself */
   .panel:hover .playBtn:hover {
-    transform: scale(1.1);
+    transform: scale(1.08);
     transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
   }
 }
 
-/* ─── Touch devices: smaller play button ─── */
+/* ─── Touch devices: slightly smaller play button ─── */
 @media (hover: none) or (pointer: coarse) {
   .playBtn {
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
   }
 
-  .playBtn svg {
-    width: 24px;
-    height: 24px;
+  .playIcon {
+    width: 60px;
+    height: 60px;
   }
 }
 
