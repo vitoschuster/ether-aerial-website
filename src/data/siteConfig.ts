@@ -7,9 +7,7 @@ export const siteConfig = {
   phone: '+385 98 281 849',
   location: 'Croatia',
   socials: {
-    instagram: 'https://www.instagram.com/etheraerial',
-    youtube: 'https://www.youtube.com/@etheraerial',
-    vimeo: 'https://vimeo.com/etheraerial',
+    instagram: 'https://www.instagram.com/ether_aerial?igsh=ZDE2MHk0YzNnNW9j&utm_source=qr',
   },
   nav: [
     { label: 'Projects', href: '/projects' },

@@ -39,12 +39,6 @@ export default function Footer() {
             <a href={siteConfig.socials.instagram} target="_blank" rel="noopener noreferrer">
               Instagram
             </a>
-            <a href={siteConfig.socials.youtube} target="_blank" rel="noopener noreferrer">
-              YouTube
-            </a>
-            <a href={siteConfig.socials.vimeo} target="_blank" rel="noopener noreferrer">
-              Vimeo
-            </a>
           </div>
         </div>
 

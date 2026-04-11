@@ -28,11 +28,11 @@ export default function AboutPage() {
 
         <div className={styles.stats}>
           <div className={styles.stat}>
-            <span className={styles.statNum}>30+</span>
+            <span className={styles.statNum}>200+</span>
             <span className={styles.statLabel}>Projects</span>
           </div>
           <div className={styles.stat}>
-            <span className={styles.statNum}>3</span>
+            <span className={styles.statNum}>5+</span>
             <span className={styles.statLabel}>Platforms</span>
           </div>
           <div className={styles.stat}>
