@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useMemo } from 'react'
 import type { Project } from '@/data/projects'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import VideoPanel from './VideoPanel'
@@ -42,6 +42,7 @@ function ReelIndicator({
 
 export default function VideoReel({ projects }: Props) {
   const [activeIndex, setActiveIndex] = useState(0)
+  const [loadedUpTo, setLoadedUpTo] = useState(0)
   const hasPointer = useMediaQuery('(hover: hover) and (pointer: fine)')
 
   const scrollToPanel = useCallback((index: number) => {
@@ -54,6 +55,18 @@ export default function VideoReel({ projects }: Props) {
     scrollToPanel(index)
   }, [scrollToPanel])
 
+  // Advance the sequential preload pipeline when a video finishes loading
+  const handleVideoLoaded = useCallback((index: number) => {
+    setLoadedUpTo((prev) => Math.max(prev, index + 1))
+  }, [])
+
+  // Always ensure the active panel (and everything before it) is loaded,
+  // even if the user jumped ahead of the sequential pipeline
+  const loadThreshold = useMemo(
+    () => Math.max(loadedUpTo, activeIndex),
+    [loadedUpTo, activeIndex]
+  )
+
   return (
     <div className={styles.reel}>
       {projects.map((project, i) => (
@@ -63,6 +76,8 @@ export default function VideoReel({ projects }: Props) {
           index={i}
           total={projects.length}
           isActive={i === activeIndex}
+          shouldLoad={i <= loadThreshold}
+          onLoaded={() => handleVideoLoaded(i)}
           onPointerEnter={() => { if (hasPointer) setActiveIndex(i) }}
           onBecomeVisible={() => { if (!hasPointer) setActiveIndex(i) }}
         />
