@@ -41,9 +41,23 @@ function ReelIndicator({
 }
 
 // Bytes per video to consider "primed enough" to start smooth playback.
-// ~2MB holds several seconds of 1080p H.264 at typical CRF 23 bitrates —
-// enough head start that panels don't stall when scrolled to.
-const PRIME_BYTES = 2 * 1024 * 1024
+// Tuned for short WebM clips (~2–6MB total); 768KB covers several seconds
+// of buffer so panels don't stall when scrolled to.
+const PRIME_BYTES = 768 * 1024
+
+// Pick the same source the <video> element will actually play. Without this
+// check the prefetcher would warm the cache for .mp4 while Chrome/Firefox
+// reach for the .webm over the network — wasted bandwidth, cold playback.
+function pickPrefetchSrc(
+  videoSrc: string | undefined,
+  videoSrcWebm: string | undefined,
+): string | undefined {
+  if (videoSrcWebm) {
+    const probe = document.createElement('video')
+    if (probe.canPlayType('video/webm') !== '') return videoSrcWebm
+  }
+  return videoSrc
+}
 
 export default function VideoReel({ projects }: Props) {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -118,7 +132,14 @@ export default function VideoReel({ projects }: Props) {
 
     async function preload() {
       await Promise.all(
-        projects.map((p, i) => (p.videoSrc ? drainOne(p.videoSrc, i) : (markPrimed(i), Promise.resolve())))
+        projects.map((p, i) => {
+          const src = pickPrefetchSrc(p.videoSrc, p.videoSrcWebm)
+          if (!src) {
+            markPrimed(i)
+            return Promise.resolve()
+          }
+          return drainOne(src, i)
+        })
       )
       // If panel 0 had no videoSrc and somehow reel-primed never fired,
       // ensure the LoadingScreen's fallback isn't the only safety net.

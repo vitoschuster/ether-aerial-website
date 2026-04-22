@@ -244,7 +244,6 @@ export const projects: Project[] = [
     year: 2022,
     category: 'automotive',
     poster: '/images/projects/maxresdefault-7.jpg',
-    videoSrc: r2('52 - bmw_2.mp4'),
     description: 'Aerial performance film for BMW.',
   },
   {
@@ -254,7 +253,6 @@ export const projects: Project[] = [
     year: 2022,
     category: 'automotive',
     poster: '/images/projects/maxresdefault-8.jpg',
-    videoSrc: r2('53 - porsche.mp4'),
     vimeoId: '1179254949',
     description: 'Aerial performance film for Porsche.',
   },
