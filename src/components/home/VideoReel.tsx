@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState, useMemo } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { Project } from '@/data/projects'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import VideoPanel from './VideoPanel'
@@ -40,9 +40,14 @@ function ReelIndicator({
   )
 }
 
+// Bytes per video to consider "primed enough" to start smooth playback.
+// ~2MB holds several seconds of 1080p H.264 at typical CRF 23 bitrates —
+// enough head start that panels don't stall when scrolled to.
+const PRIME_BYTES = 2 * 1024 * 1024
+
 export default function VideoReel({ projects }: Props) {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [loadedUpTo, setLoadedUpTo] = useState(0)
+  const [primed, setPrimed] = useState<Set<number>>(new Set())
   const hasPointer = useMediaQuery('(hover: hover) and (pointer: fine)')
 
   const scrollToPanel = useCallback((index: number) => {
@@ -55,41 +60,71 @@ export default function VideoReel({ projects }: Props) {
     scrollToPanel(index)
   }, [scrollToPanel])
 
-  // Sequentially drain each video's full body into the HTTP cache. Range
-  // requests from <video> elements hit that cache = instant playback.
-  // canplaythrough fires too early (~2–5s of buffer), so we can't rely on
-  // the <video> element itself to know when a video is actually "loaded."
+  // Parallel prefetch: kick off every video's fetch on mount so they all
+  // start buffering at once. Each one streams bytes into the HTTP cache.
+  // As soon as a video crosses PRIME_BYTES, its panel is "primed" and
+  // the <video> element gets preload="auto" (so Range requests hit the
+  // warm cache). Fetches continue to completion in the background.
+  //
+  // A `reel-primed` window event fires once panel 0's bytes have landed —
+  // LoadingScreen listens for this to hold the splash until the first
+  // video can play smoothly.
   useEffect(() => {
     let cancelled = false
-    let activeReader: ReadableStreamDefaultReader<Uint8Array> | null = null
+    let primeFired = false
 
-    async function preload() {
-      for (let i = 0; i < projects.length; i++) {
-        if (cancelled) return
-        const src = projects[i].videoSrc
+    const markPrimed = (i: number) => {
+      if (cancelled) return
+      setPrimed((prev) => {
+        if (prev.has(i)) return prev
+        const next = new Set(prev)
+        next.add(i)
+        return next
+      })
+      if (i === 0 && !primeFired) {
+        primeFired = true
+        window.dispatchEvent(new CustomEvent('reel-primed'))
+      }
+    }
 
-        if (src) {
-          try {
-            const res = await fetch(src)
-            if (res.ok && res.body) {
-              activeReader = res.body.getReader()
-              while (true) {
-                const { done } = await activeReader.read()
-                if (cancelled) {
-                  activeReader.cancel().catch(() => {})
-                  return
-                }
-                if (done) break
-              }
-              activeReader = null
-            }
-          } catch {
-            // Network/CORS error — advance anyway so the pipeline doesn't stall
+    async function drainOne(src: string, i: number) {
+      try {
+        const res = await fetch(src)
+        if (!res.ok || !res.body) {
+          markPrimed(i)
+          return
+        }
+        const reader = res.body.getReader()
+        let bytes = 0
+        let crossed = false
+        while (true) {
+          const { done, value } = await reader.read()
+          if (cancelled) {
+            reader.cancel().catch(() => {})
+            return
+          }
+          if (done) break
+          bytes += value?.byteLength ?? 0
+          if (!crossed && bytes >= PRIME_BYTES) {
+            crossed = true
+            markPrimed(i)
           }
         }
+        if (!crossed) markPrimed(i) // video smaller than threshold
+      } catch {
+        markPrimed(i)
+      }
+    }
 
-        if (cancelled) return
-        setLoadedUpTo((prev) => Math.max(prev, i + 1))
+    async function preload() {
+      await Promise.all(
+        projects.map((p, i) => (p.videoSrc ? drainOne(p.videoSrc, i) : (markPrimed(i), Promise.resolve())))
+      )
+      // If panel 0 had no videoSrc and somehow reel-primed never fired,
+      // ensure the LoadingScreen's fallback isn't the only safety net.
+      if (!cancelled && !primeFired) {
+        primeFired = true
+        window.dispatchEvent(new CustomEvent('reel-primed'))
       }
     }
 
@@ -97,16 +132,8 @@ export default function VideoReel({ projects }: Props) {
 
     return () => {
       cancelled = true
-      activeReader?.cancel().catch(() => {})
     }
   }, [projects])
-
-  // Always ensure the active panel (and everything before it) is loaded,
-  // even if the user jumped ahead of the sequential pipeline
-  const loadThreshold = useMemo(
-    () => Math.max(loadedUpTo, activeIndex),
-    [loadedUpTo, activeIndex]
-  )
 
   return (
     <div className={styles.reel}>
@@ -117,7 +144,7 @@ export default function VideoReel({ projects }: Props) {
           index={i}
           total={projects.length}
           isActive={i === activeIndex}
-          shouldLoad={i <= loadThreshold}
+          shouldLoad={primed.has(i) || i === activeIndex}
           onPointerEnter={() => { if (hasPointer) setActiveIndex(i) }}
           onBecomeVisible={() => { if (!hasPointer) setActiveIndex(i) }}
         />

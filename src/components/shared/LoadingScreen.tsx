@@ -10,8 +10,31 @@ export default function LoadingScreen() {
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    const t = setTimeout(() => setGone(true), 2400)
-    return () => clearTimeout(t)
+
+    // Hold the splash until VideoReel primes the first panel (or 5s passes).
+    // A minimum of 1.6s keeps the brand animation from flashing off too fast
+    // on fast connections / warm caches.
+    const MIN_MS = 1600
+    const MAX_MS = 5000
+    const mountTime = Date.now()
+    let closed = false
+
+    const close = () => {
+      if (closed) return
+      closed = true
+      const elapsed = Date.now() - mountTime
+      const wait = Math.max(0, MIN_MS - elapsed)
+      window.setTimeout(() => setGone(true), wait)
+    }
+
+    const onPrimed = () => close()
+    window.addEventListener('reel-primed', onPrimed)
+    const fallback = window.setTimeout(close, MAX_MS)
+
+    return () => {
+      window.removeEventListener('reel-primed', onPrimed)
+      window.clearTimeout(fallback)
+    }
   }, [])
 
   return (
