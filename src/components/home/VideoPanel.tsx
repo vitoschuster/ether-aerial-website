@@ -10,10 +10,8 @@ interface Props {
   total: number
   /** VideoReel drives this — panel is "on" when true */
   isActive: boolean
-  /** True when this panel's video should begin loading (sequential pipeline) */
+  /** True when this panel's video body has been cached (VideoReel-driven) */
   shouldLoad: boolean
-  /** Called when this panel's video is fully loaded (or immediately if no local video) */
-  onLoaded: () => void
   /** Called on mouseenter — VideoReel decides whether to act on it */
   onPointerEnter: () => void
   /** Called when panel crosses 50% of viewport — VideoReel decides whether to act on it */
@@ -25,7 +23,6 @@ export default function VideoPanel({
   index,
   isActive,
   shouldLoad,
-  onLoaded,
   onPointerEnter,
   onBecomeVisible,
 }: Props) {
@@ -41,38 +38,6 @@ export default function VideoPanel({
   // Stable ref for the callback — IntersectionObserver re-creates only on mount
   const onBecomeVisibleRef = useRef(onBecomeVisible)
   useEffect(() => { onBecomeVisibleRef.current = onBecomeVisible })
-
-  const onLoadedRef = useRef(onLoaded)
-  useEffect(() => { onLoadedRef.current = onLoaded })
-
-  // Sequential preload pipeline — fires onLoaded once the video has enough data
-  // to play through (or immediately if this panel has no local video to load)
-  useEffect(() => {
-    if (!shouldLoad) return
-
-    const video = videoRef.current
-    const hasLocalVideo = !!(project.videoSrc || project.videoSrcWebm)
-
-    if (!hasLocalVideo || !video) {
-      onLoadedRef.current()
-      return
-    }
-
-    // Already buffered enough (e.g. cached)
-    if (video.readyState >= 3) {
-      onLoadedRef.current()
-      return
-    }
-
-    const advance = () => onLoadedRef.current()
-    video.addEventListener('canplaythrough', advance, { once: true })
-    // Don't stall the pipeline on error — advance anyway
-    video.addEventListener('error', advance, { once: true })
-    return () => {
-      video.removeEventListener('canplaythrough', advance)
-      video.removeEventListener('error', advance)
-    }
-  }, [shouldLoad, project.videoSrc, project.videoSrcWebm])
 
   // Video play / pause — driven entirely by isActive
   useEffect(() => {

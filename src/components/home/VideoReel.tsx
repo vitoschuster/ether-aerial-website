@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useState, useMemo } from 'react'
+import { useCallback, useEffect, useState, useMemo } from 'react'
 import type { Project } from '@/data/projects'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 import VideoPanel from './VideoPanel'
@@ -55,10 +55,51 @@ export default function VideoReel({ projects }: Props) {
     scrollToPanel(index)
   }, [scrollToPanel])
 
-  // Advance the sequential preload pipeline when a video finishes loading
-  const handleVideoLoaded = useCallback((index: number) => {
-    setLoadedUpTo((prev) => Math.max(prev, index + 1))
-  }, [])
+  // Sequentially drain each video's full body into the HTTP cache. Range
+  // requests from <video> elements hit that cache = instant playback.
+  // canplaythrough fires too early (~2–5s of buffer), so we can't rely on
+  // the <video> element itself to know when a video is actually "loaded."
+  useEffect(() => {
+    let cancelled = false
+    let activeReader: ReadableStreamDefaultReader<Uint8Array> | null = null
+
+    async function preload() {
+      for (let i = 0; i < projects.length; i++) {
+        if (cancelled) return
+        const src = projects[i].videoSrc
+
+        if (src) {
+          try {
+            const res = await fetch(src)
+            if (res.ok && res.body) {
+              activeReader = res.body.getReader()
+              while (true) {
+                const { done } = await activeReader.read()
+                if (cancelled) {
+                  activeReader.cancel().catch(() => {})
+                  return
+                }
+                if (done) break
+              }
+              activeReader = null
+            }
+          } catch {
+            // Network/CORS error — advance anyway so the pipeline doesn't stall
+          }
+        }
+
+        if (cancelled) return
+        setLoadedUpTo((prev) => Math.max(prev, i + 1))
+      }
+    }
+
+    preload()
+
+    return () => {
+      cancelled = true
+      activeReader?.cancel().catch(() => {})
+    }
+  }, [projects])
 
   // Always ensure the active panel (and everything before it) is loaded,
   // even if the user jumped ahead of the sequential pipeline
@@ -77,7 +118,6 @@ export default function VideoReel({ projects }: Props) {
           total={projects.length}
           isActive={i === activeIndex}
           shouldLoad={i <= loadThreshold}
-          onLoaded={() => handleVideoLoaded(i)}
           onPointerEnter={() => { if (hasPointer) setActiveIndex(i) }}
           onBecomeVisible={() => { if (!hasPointer) setActiveIndex(i) }}
         />
