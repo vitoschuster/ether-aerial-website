@@ -36,32 +36,37 @@
 .track {
   display: flex;
   width: max-content;
-  animation: ticker 50s linear infinite;
+  will-change: transform;
 }
 
-.trackReverse {
-  animation: ticker-reverse 50s linear infinite;
+/* Three distinct variants — different durations + directions ensure the
+   three mobile rows never cyclically re-sync to the same relative position. */
+.trackA {
+  animation: ticker 38s linear infinite;
 }
 
-/* Offset row 3 by half the cycle so it's visually staggered from row 1 */
-.trackOffset {
-  animation: ticker 50s linear infinite -25s;
+.trackB {
+  animation: ticker-reverse 32s linear infinite;
+}
+
+.trackC {
+  animation: ticker 44s linear infinite;
 }
 
 @keyframes ticker {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
 }
 
 @keyframes ticker-reverse {
-  from { transform: translateX(-50%); }
-  to   { transform: translateX(0); }
+  from { transform: translate3d(-50%, 0, 0); }
+  to   { transform: translate3d(0, 0, 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .track,
-  .trackReverse,
-  .trackOffset {
+  .trackA,
+  .trackB,
+  .trackC {
     animation: none;
   }
 }

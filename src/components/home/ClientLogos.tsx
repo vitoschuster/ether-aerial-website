@@ -52,11 +52,20 @@ function LogoItem({ name, src, filter, size }: { name: string; src?: string; fil
   )
 }
 
-function Track({ reverse, offset }: { reverse?: boolean; offset?: boolean }) {
+// Three distinct orderings ensure the 3 mobile rows never show the same logo
+// vertically aligned at the same time. The track content is different, not just
+// animation timing offset — offsetting identical arrays falls back into sync.
+const ROW_1 = LOGOS
+const ROW_2 = [...LOGOS].reverse()
+const ROW_3 = [...LOGOS.slice(Math.floor(LOGOS.length / 2)), ...LOGOS.slice(0, Math.floor(LOGOS.length / 2))]
+
+function Track({ items, variant }: { items: typeof LOGOS; variant: 'a' | 'b' | 'c' }) {
+  const variantClass =
+    variant === 'a' ? styles.trackA : variant === 'b' ? styles.trackB : styles.trackC
   return (
-    <div className={`${styles.track} ${reverse ? styles.trackReverse : ''} ${offset ? styles.trackOffset : ''}`}>
-      {LOGOS.map((l) => <LogoItem key={l.name} {...l} />)}
-      {LOGOS.map((l) => <LogoItem key={l.name + '-2'} {...l} />)}
+    <div className={`${styles.track} ${variantClass}`}>
+      {items.map((l, i) => <LogoItem key={`${variant}-1-${l.name}-${i}`} {...l} />)}
+      {items.map((l, i) => <LogoItem key={`${variant}-2-${l.name}-${i}`} {...l} />)}
     </div>
   )
 }
@@ -68,17 +77,17 @@ export default function ClientLogos() {
 
       {/* Row 1 — all viewports, scrolls left */}
       <div className={styles.viewport}>
-        <Track />
+        <Track items={ROW_1} variant="a" />
       </div>
 
-      {/* Row 2 — mobile only, scrolls right */}
+      {/* Row 2 — mobile only, reversed order scrolling right */}
       <div className={`${styles.viewport} ${styles.viewportMobile}`}>
-        <Track reverse />
+        <Track items={ROW_2} variant="b" />
       </div>
 
-      {/* Row 3 — mobile only, scrolls left (−25s offset so it's staggered from row 1) */}
+      {/* Row 3 — mobile only, shifted order scrolling left (different duration keeps it out of sync) */}
       <div className={`${styles.viewport} ${styles.viewportMobile}`}>
-        <Track offset />
+        <Track items={ROW_3} variant="c" />
       </div>
     </section>
   )
