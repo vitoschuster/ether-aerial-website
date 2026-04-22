@@ -76,7 +76,7 @@ export const projects: Project[] = [
     reelLabel: 'McDonald\'s',
     year: 2024,
     category: 'commercial',
-    poster: '/images/projects/maxresdefault-31.jpg',
+    poster: '/images/projects/mcdonalds-thumbnail.jpg',
     videoSrc: r2('3-mcdelivery.mp4'),
     videoSrcWebm: r2('3-mcdelivery.webm'),
     vimeoId: '1179259721',
@@ -309,6 +309,15 @@ export const projects: Project[] = [
     poster: '/images/projects/maxresdefault-20.jpg',
     youtubeId: '',
     label: 'Yellowcake / Imperia',
+  },
+  {
+    slug: 'fnc-arena-pula',
+    title: 'FNC at Arena Pula',
+    client: 'FNC',
+    year: 2024,
+    category: 'commercial',
+    poster: '/images/projects/maxresdefault-31.jpg',
+    description: 'Aerial coverage of the FNC fight night held at the Roman Arena in Pula.',
   },
 ]
 
