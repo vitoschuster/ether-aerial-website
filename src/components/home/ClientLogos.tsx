@@ -83,11 +83,16 @@ function DesktopTrack() {
   )
 }
 
-// Mobile — JS-driven scrollLeft. Lets users swipe to scrub; auto-scroll
-// resumes ~2.5s after the last touch. `touch-action: pan-x` scopes touch
-// gestures on this element to horizontal, so vertical page scrolling is
-// untouched. If anything blocks JS, the logos still render as a static
-// row — so there's no broken state.
+// Mobile — hybrid transform-for-auto / scrollLeft-for-touch. Two visual
+// representations are equivalent: `transform: translateX(-X)` on the track
+// with scrollLeft=0 looks identical to transform=0 with scrollLeft=X.
+// Auto mode uses transform for GPU-accelerated sub-pixel smoothness (iOS
+// Safari rounds scrollLeft to integer pixels, which caused the blocky look).
+// While the user is touching (or in the 2.5s grace after release, while iOS
+// momentum finishes), we hand control to the native scroll container so
+// drag and momentum feel right. `touch-action: pan-x` keeps vertical page
+// scrolling uninterfered. If JS fails to mount, rows render as static
+// strips — no broken state.
 function MobileTrack({
   items,
   durationSec,
@@ -97,95 +102,110 @@ function MobileTrack({
   durationSec: number
   reverse: boolean
 }) {
-  const ref = useRef<HTMLDivElement>(null)
+  const viewportRef = useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const el = ref.current
-    if (!el) return
+    const viewport = viewportRef.current
+    const track = trackRef.current
+    if (!viewport || !track) return
 
     const prefersReducedMotion =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    // Track position as a float in `pos` and push rounded values to scrollLeft.
-    // Setting scrollLeft directly to fractional values was hitting integer
-    // rounding on forward-direction rows (start at 0, add ~0.4px/frame → rounds
-    // back to 0 and animation stalls). Reverse rows worked by accident because
-    // they start high (halfWidth) and subtracting fractions from large integers
-    // still advances.
-    let pos = 0
-
-    const seedPosition = () => {
-      const half = el.scrollWidth / 2
-      if (reverse && half > 0 && el.scrollLeft < 1) el.scrollLeft = half
-      pos = el.scrollLeft
-    }
-    seedPosition()
-
-    const ro = new ResizeObserver(() => {
-      if (reverse && el.scrollLeft < 1) seedPosition()
-    })
-    ro.observe(el)
-
-    let rafId = 0
-    let paused = false
+    type Mode = 'auto' | 'touch' | 'grace'
+    let mode: Mode = 'auto'
+    let pos = 0 // float — current visual offset in px (positive shifts track left)
     let resumeAt = 0
-    let syncOnResume = false
     let lastTs = performance.now()
+    let rafId = 0
+
+    const applyTransform = () => {
+      track.style.transform = `translate3d(${-pos}px, 0, 0)`
+    }
+
+    let seeded = false
+    const seed = () => {
+      const half = track.scrollWidth / 2
+      if (half <= 0) return
+      if (reverse) pos = half // reverse needs headroom to decrement
+      else pos = 0
+      viewport.scrollLeft = 0
+      applyTransform()
+      seeded = true
+    }
+    seed()
+
+    // If layout wasn't ready on first tick (images still measuring), seed on
+    // first resize. Don't re-seed after that — ongoing image loads shouldn't
+    // wipe out animation progress.
+    const ro = new ResizeObserver(() => {
+      if (!seeded) seed()
+    })
+    ro.observe(track)
 
     const step = (ts: number) => {
-      const dt = Math.min(ts - lastTs, 100) // clamp long inactive-tab gaps
+      const dt = Math.min(ts - lastTs, 100)
       lastTs = ts
-      const half = el.scrollWidth / 2
-      const canAdvance = !paused && ts >= resumeAt && half > 0 && !prefersReducedMotion
-      if (canAdvance) {
-        // After a touch-release + 2.5s grace, pull current scrollLeft (iOS may
-        // have applied momentum beyond where we paused) so the next frame
-        // continues from the user's actual position instead of jumping back.
-        if (syncOnResume) {
-          pos = el.scrollLeft
-          syncOnResume = false
-        }
+      const half = track.scrollWidth / 2
+
+      // Grace → auto handoff: iOS momentum has settled, capture wherever the
+      // user scrolled to, fold it into `pos`, and switch back to transform.
+      if (mode === 'grace' && ts >= resumeAt && half > 0) {
+        const scrolled = viewport.scrollLeft
+        pos = ((scrolled % half) + half) % half
+        viewport.scrollLeft = 0
+        applyTransform()
+        mode = 'auto'
+      }
+
+      if (mode === 'auto' && half > 0 && !prefersReducedMotion) {
         const pxPerMs = (half / (durationSec * 1000)) * (reverse ? -1 : 1)
         pos += pxPerMs * dt
         if (pos >= half) pos -= half
         if (pos < 0) pos += half
-        el.scrollLeft = pos
+        applyTransform()
       }
+
       rafId = requestAnimationFrame(step)
     }
     rafId = requestAnimationFrame(step)
 
     const onTouchStart = () => {
-      paused = true
+      if (mode === 'auto') {
+        // Swap representations without visual change: pos → scrollLeft, transform 0.
+        track.style.transform = 'translate3d(0, 0, 0)'
+        viewport.scrollLeft = pos
+      }
+      // If we were in grace, iOS is already doing momentum — leave it alone.
+      mode = 'touch'
     }
     const onTouchEnd = () => {
-      paused = false
-      // 2.5s grace period — long enough for iOS momentum to settle.
+      mode = 'grace'
       resumeAt = performance.now() + 2500
-      syncOnResume = true
       lastTs = performance.now()
     }
 
-    el.addEventListener('touchstart', onTouchStart, { passive: true })
-    el.addEventListener('touchend', onTouchEnd, { passive: true })
-    el.addEventListener('touchcancel', onTouchEnd, { passive: true })
+    viewport.addEventListener('touchstart', onTouchStart, { passive: true })
+    viewport.addEventListener('touchend', onTouchEnd, { passive: true })
+    viewport.addEventListener('touchcancel', onTouchEnd, { passive: true })
 
     return () => {
       cancelAnimationFrame(rafId)
       ro.disconnect()
-      el.removeEventListener('touchstart', onTouchStart)
-      el.removeEventListener('touchend', onTouchEnd)
-      el.removeEventListener('touchcancel', onTouchEnd)
+      viewport.removeEventListener('touchstart', onTouchStart)
+      viewport.removeEventListener('touchend', onTouchEnd)
+      viewport.removeEventListener('touchcancel', onTouchEnd)
     }
   }, [durationSec, reverse])
 
   return (
     <div
-      ref={ref}
+      ref={viewportRef}
       className={`${styles.viewport} ${styles.viewportMobile} ${styles.viewportInteractive}`}
     >
-      <div className={styles.track}>
+      <div ref={trackRef} className={styles.track}>
         {items.map((l, i) => <LogoItem key={`m1-${l.name}-${i}`} {...l} />)}
         {items.map((l, i) => <LogoItem key={`m2-${l.name}-${i}`} {...l} />)}
       </div>
