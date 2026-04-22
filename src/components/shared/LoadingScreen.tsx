@@ -9,11 +9,14 @@ export default function LoadingScreen() {
   const [gone, setGone] = useState(false)
 
   useEffect(() => {
-    document.body.style.overflow = 'hidden'
-
     // Hold the splash until VideoReel primes the first panel (or 5s passes).
     // A minimum of 1.6s keeps the brand animation from flashing off too fast
     // on fast connections / warm caches.
+    //
+    // NOTE: intentionally NOT locking document.body.overflow here. The splash
+    // is a fixed full-cover overlay — locking body isn't needed, and racing
+    // with Navigation's own overflow effect used to cause scroll jumps on
+    // iOS Safari when the two effects un/locked in quick succession.
     const MIN_MS = 1600
     const MAX_MS = 5000
     const mountTime = Date.now()
@@ -38,7 +41,7 @@ export default function LoadingScreen() {
   }, [])
 
   return (
-    <AnimatePresence onExitComplete={() => { document.body.style.overflow = '' }}>
+    <AnimatePresence>
       {!gone && (
         <motion.div
           className={styles.screen}

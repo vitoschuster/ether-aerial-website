@@ -40,17 +40,18 @@
 }
 
 /* Three distinct variants — different durations + directions ensure the
-   three mobile rows never cyclically re-sync to the same relative position. */
+   three mobile rows never cyclically re-sync to the same relative position.
+   Slow enough to read each logo comfortably. */
 .trackA {
-  animation: ticker 38s linear infinite;
+  animation: ticker 80s linear infinite;
 }
 
 .trackB {
-  animation: ticker-reverse 32s linear infinite;
+  animation: ticker-reverse 70s linear infinite;
 }
 
 .trackC {
-  animation: ticker 44s linear infinite;
+  animation: ticker 90s linear infinite;
 }
 
 @keyframes ticker {
@@ -71,13 +72,21 @@
   }
 }
 
-/* Rows 2 and 3 — mobile only */
+/* Desktop row — hidden on mobile (mobile shows 3 partitioned rows instead) */
+.viewportDesktop {
+  display: block;
+}
+
+/* Mobile-only rows — hidden on desktop */
 .viewportMobile {
   display: none;
   margin-top: 16px;
 }
 
 @media (hover: none) or (pointer: coarse) {
+  .viewportDesktop {
+    display: none;
+  }
   .viewportMobile {
     display: block;
   }

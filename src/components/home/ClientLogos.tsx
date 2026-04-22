@@ -52,12 +52,13 @@ function LogoItem({ name, src, filter, size }: { name: string; src?: string; fil
   )
 }
 
-// Three distinct orderings ensure the 3 mobile rows never show the same logo
-// vertically aligned at the same time. The track content is different, not just
-// animation timing offset — offsetting identical arrays falls back into sync.
-const ROW_1 = LOGOS
-const ROW_2 = [...LOGOS].reverse()
-const ROW_3 = [...LOGOS.slice(Math.floor(LOGOS.length / 2)), ...LOGOS.slice(0, Math.floor(LOGOS.length / 2))]
+// Mobile shows 3 rows. To guarantee no logo is visible in two rows at the same
+// time, we partition LOGOS into 3 disjoint subsets (modulo 3 — keeps the mix
+// of image and wordmark types spread across all rows). Desktop still shows
+// the full set in its single row.
+const ROW_1_MOBILE = LOGOS.filter((_, i) => i % 3 === 0)
+const ROW_2_MOBILE = LOGOS.filter((_, i) => i % 3 === 1)
+const ROW_3_MOBILE = LOGOS.filter((_, i) => i % 3 === 2)
 
 function Track({ items, variant }: { items: typeof LOGOS; variant: 'a' | 'b' | 'c' }) {
   const variantClass =
@@ -75,19 +76,20 @@ export default function ClientLogos() {
     <section className={styles.section} aria-label="Trusted by">
       <p className={styles.label}>Trusted by</p>
 
-      {/* Row 1 — all viewports, scrolls left */}
-      <div className={styles.viewport}>
-        <Track items={ROW_1} variant="a" />
+      {/* Desktop — single row showing every logo */}
+      <div className={`${styles.viewport} ${styles.viewportDesktop}`}>
+        <Track items={LOGOS} variant="a" />
       </div>
 
-      {/* Row 2 — mobile only, reversed order scrolling right */}
+      {/* Mobile — three disjoint rows, no overlapping logos */}
       <div className={`${styles.viewport} ${styles.viewportMobile}`}>
-        <Track items={ROW_2} variant="b" />
+        <Track items={ROW_1_MOBILE} variant="a" />
       </div>
-
-      {/* Row 3 — mobile only, shifted order scrolling left (different duration keeps it out of sync) */}
       <div className={`${styles.viewport} ${styles.viewportMobile}`}>
-        <Track items={ROW_3} variant="c" />
+        <Track items={ROW_2_MOBILE} variant="b" />
+      </div>
+      <div className={`${styles.viewport} ${styles.viewportMobile}`}>
+        <Track items={ROW_3_MOBILE} variant="c" />
       </div>
     </section>
   )
