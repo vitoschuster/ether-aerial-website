@@ -1,7 +1,6 @@
-/* 90svh: next panel peeks below, signalling scroll */
 .panel {
   position: relative;
-  height: 90svh;
+  height: 100svh;
   width: 100%;
   overflow: hidden;
   background: radial-gradient(ellipse at 60% 40%, #1c1c24 0%, #0A0A0C 70%);
