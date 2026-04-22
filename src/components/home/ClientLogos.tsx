@@ -1,3 +1,6 @@
+'use client'
+
+import { useEffect, useRef } from 'react'
 import styles from './ClientLogos.module.css'
 
 // filter: 'invert' → brightness(0) invert(1) → pure white silhouette (for dark logos on transparent bg)
@@ -70,13 +73,106 @@ const ROW_1_MOBILE = LOGOS.filter((_, i) => i % 3 === 0)
 const ROW_2_MOBILE = LOGOS.filter((_, i) => i % 3 === 1)
 const ROW_3_MOBILE = LOGOS.filter((_, i) => i % 3 === 2)
 
-function Track({ items, variant }: { items: Logo[]; variant: 'a' | 'b' | 'c' }) {
-  const variantClass =
-    variant === 'a' ? styles.trackA : variant === 'b' ? styles.trackB : styles.trackC
+// Desktop — CSS animation, single row, full LOGOS list.
+function DesktopTrack() {
   return (
-    <div className={`${styles.track} ${variantClass}`}>
-      {items.map((l, i) => <LogoItem key={`${variant}-1-${l.name}-${i}`} {...l} />)}
-      {items.map((l, i) => <LogoItem key={`${variant}-2-${l.name}-${i}`} {...l} />)}
+    <div className={`${styles.track} ${styles.trackA}`}>
+      {LOGOS.map((l, i) => <LogoItem key={`d1-${l.name}-${i}`} {...l} />)}
+      {LOGOS.map((l, i) => <LogoItem key={`d2-${l.name}-${i}`} {...l} />)}
+    </div>
+  )
+}
+
+// Mobile — JS-driven scrollLeft. Lets users swipe to scrub; auto-scroll
+// resumes ~2.5s after the last touch. `touch-action: pan-x` scopes touch
+// gestures on this element to horizontal, so vertical page scrolling is
+// untouched. If anything blocks JS, the logos still render as a static
+// row — so there's no broken state.
+function MobileTrack({
+  items,
+  durationSec,
+  reverse,
+}: {
+  items: Logo[]
+  durationSec: number
+  reverse: boolean
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    // A reverse-direction track starts at halfWidth so scrolling left has room
+    // to wrap around.
+    const seedPosition = () => {
+      const half = el.scrollWidth / 2
+      if (reverse && half > 0 && el.scrollLeft < 1) el.scrollLeft = half
+    }
+    seedPosition()
+
+    const ro = new ResizeObserver(() => {
+      if (reverse && el.scrollLeft < 1) seedPosition()
+    })
+    ro.observe(el)
+
+    let rafId = 0
+    let paused = false
+    let resumeAt = 0
+    let lastTs = performance.now()
+
+    const step = (ts: number) => {
+      const dt = Math.min(ts - lastTs, 100) // clamp long inactive-tab gaps
+      lastTs = ts
+      const half = el.scrollWidth / 2
+      const canAdvance = !paused && ts >= resumeAt && half > 0 && !prefersReducedMotion
+      if (canAdvance) {
+        const pxPerMs = (half / (durationSec * 1000)) * (reverse ? -1 : 1)
+        let next = el.scrollLeft + pxPerMs * dt
+        if (next >= half) next -= half
+        if (next < 0) next += half
+        el.scrollLeft = next
+      }
+      rafId = requestAnimationFrame(step)
+    }
+    rafId = requestAnimationFrame(step)
+
+    const onTouchStart = () => {
+      paused = true
+    }
+    const onTouchEnd = () => {
+      paused = false
+      // 2.5s grace period — long enough for iOS momentum to settle.
+      resumeAt = performance.now() + 2500
+      lastTs = performance.now()
+    }
+
+    el.addEventListener('touchstart', onTouchStart, { passive: true })
+    el.addEventListener('touchend', onTouchEnd, { passive: true })
+    el.addEventListener('touchcancel', onTouchEnd, { passive: true })
+
+    return () => {
+      cancelAnimationFrame(rafId)
+      ro.disconnect()
+      el.removeEventListener('touchstart', onTouchStart)
+      el.removeEventListener('touchend', onTouchEnd)
+      el.removeEventListener('touchcancel', onTouchEnd)
+    }
+  }, [durationSec, reverse])
+
+  return (
+    <div
+      ref={ref}
+      className={`${styles.viewport} ${styles.viewportMobile} ${styles.viewportInteractive}`}
+    >
+      <div className={styles.track}>
+        {items.map((l, i) => <LogoItem key={`m1-${l.name}-${i}`} {...l} />)}
+        {items.map((l, i) => <LogoItem key={`m2-${l.name}-${i}`} {...l} />)}
+      </div>
     </div>
   )
 }
@@ -88,19 +184,13 @@ export default function ClientLogos() {
 
       {/* Desktop — single row showing every logo */}
       <div className={`${styles.viewport} ${styles.viewportDesktop}`}>
-        <Track items={LOGOS} variant="a" />
+        <DesktopTrack />
       </div>
 
-      {/* Mobile — three disjoint rows, no overlapping logos */}
-      <div className={`${styles.viewport} ${styles.viewportMobile}`}>
-        <Track items={ROW_1_MOBILE} variant="a" />
-      </div>
-      <div className={`${styles.viewport} ${styles.viewportMobile}`}>
-        <Track items={ROW_2_MOBILE} variant="b" />
-      </div>
-      <div className={`${styles.viewport} ${styles.viewportMobile}`}>
-        <Track items={ROW_3_MOBILE} variant="c" />
-      </div>
+      {/* Mobile — three disjoint rows, swipe-to-scrub */}
+      <MobileTrack items={ROW_1_MOBILE} durationSec={49} reverse={false} />
+      <MobileTrack items={ROW_2_MOBILE} durationSec={43} reverse={true} />
+      <MobileTrack items={ROW_3_MOBILE} durationSec={56} reverse={false} />
     </section>
   )
 }

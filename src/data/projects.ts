@@ -133,7 +133,7 @@ export const projects: Project[] = [
     description: 'Aerial cinematography for the major Balkan TV series Južni Vetar.',
     featured: true,
     reelOrder: 6,
-    credits: 'Aerial Director of Photography',
+    credits: 'Aerial Cinematography',
     videoScale: 1.5,
     videoScaleMobile: 1.4,
   },

@@ -83,6 +83,21 @@
   margin-top: 28px;
 }
 
+/* Mobile rows are JS-driven — user can swipe to scrub. `touch-action: pan-x`
+   keeps horizontal swipes for the strip and lets vertical swipes bubble up
+   to scroll the page normally. */
+.viewportInteractive {
+  overflow-x: auto;
+  overflow-y: hidden;
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.viewportInteractive::-webkit-scrollbar {
+  display: none;
+}
+
 @media (hover: none) or (pointer: coarse) {
   .viewportDesktop {
     display: none;
