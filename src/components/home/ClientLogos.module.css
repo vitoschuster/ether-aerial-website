@@ -43,15 +43,15 @@
    three mobile rows never cyclically re-sync to the same relative position.
    Slow enough to read each logo comfortably. */
 .trackA {
-  animation: ticker 68s linear infinite;
+  animation: ticker 58s linear infinite;
 }
 
 .trackB {
-  animation: ticker-reverse 60s linear infinite;
+  animation: ticker-reverse 51s linear infinite;
 }
 
 .trackC {
-  animation: ticker 77s linear infinite;
+  animation: ticker 66s linear infinite;
 }
 
 @keyframes ticker {
@@ -80,7 +80,7 @@
 /* Mobile-only rows — hidden on desktop */
 .viewportMobile {
   display: none;
-  margin-top: 16px;
+  margin-top: 28px;
 }
 
 @media (hover: none) or (pointer: coarse) {

@@ -19,6 +19,7 @@ import styles from './ClientLogos.module.css'
 const LOGOS: { name: string; src?: string; filter?: 'invert' | 'color'; size?: 'lg' }[] = [
   { name: 'McDonald\'s',     src: '/images/logos/mcdonalds-logo.svg',  filter: 'color' },
   { name: 'BMW',             src: '/images/logos/bmw.svg',             filter: 'color', size: 'lg' },
+  { name: 'BMW M',           src: '/images/logos/bmw-m.png',           filter: 'color', size: 'lg' },
   { name: 'Mercedes',        src: '/images/logos/mercedes-logo.svg',   filter: 'color' },
   { name: 'Porsche',         src: '/images/logos/porsche.svg',         filter: 'invert' },
   { name: 'Toyota',          src: '/images/logos/toyota.svg',          filter: 'color' },
@@ -27,6 +28,7 @@ const LOGOS: { name: string; src?: string; filter?: 'invert' | 'color'; size?: '
   { name: 'Pokémon GO',      src: '/images/logos/pokemon-go.svg',      filter: 'color', size: 'lg' },
   { name: 'INA',             src: '/images/logos/ina.png',             filter: 'color' },
   { name: 'Končar',          src: '/images/logos/koncar.png',          filter: 'color' },
+  { name: 'HAC',             src: '/images/logos/hac.png',             filter: 'color', size: 'lg' },
   { name: 'IDJ Videos',      src: '/images/logos/idj-videos.webp',     filter: 'color' },
   { name: 'Joop!',           src: '/images/logos/joop.jpg',            filter: 'color', size: 'lg' },
   { name: 'Južni Vetar',     src: '/images/logos/juzni-vetar.jpg',     filter: 'color', size: 'lg' },
