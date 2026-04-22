@@ -107,11 +107,18 @@ function MobileTrack({
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    // A reverse-direction track starts at halfWidth so scrolling left has room
-    // to wrap around.
+    // Track position as a float in `pos` and push rounded values to scrollLeft.
+    // Setting scrollLeft directly to fractional values was hitting integer
+    // rounding on forward-direction rows (start at 0, add ~0.4px/frame → rounds
+    // back to 0 and animation stalls). Reverse rows worked by accident because
+    // they start high (halfWidth) and subtracting fractions from large integers
+    // still advances.
+    let pos = 0
+
     const seedPosition = () => {
       const half = el.scrollWidth / 2
       if (reverse && half > 0 && el.scrollLeft < 1) el.scrollLeft = half
+      pos = el.scrollLeft
     }
     seedPosition()
 
@@ -123,6 +130,7 @@ function MobileTrack({
     let rafId = 0
     let paused = false
     let resumeAt = 0
+    let syncOnResume = false
     let lastTs = performance.now()
 
     const step = (ts: number) => {
@@ -131,11 +139,18 @@ function MobileTrack({
       const half = el.scrollWidth / 2
       const canAdvance = !paused && ts >= resumeAt && half > 0 && !prefersReducedMotion
       if (canAdvance) {
+        // After a touch-release + 2.5s grace, pull current scrollLeft (iOS may
+        // have applied momentum beyond where we paused) so the next frame
+        // continues from the user's actual position instead of jumping back.
+        if (syncOnResume) {
+          pos = el.scrollLeft
+          syncOnResume = false
+        }
         const pxPerMs = (half / (durationSec * 1000)) * (reverse ? -1 : 1)
-        let next = el.scrollLeft + pxPerMs * dt
-        if (next >= half) next -= half
-        if (next < 0) next += half
-        el.scrollLeft = next
+        pos += pxPerMs * dt
+        if (pos >= half) pos -= half
+        if (pos < 0) pos += half
+        el.scrollLeft = pos
       }
       rafId = requestAnimationFrame(step)
     }
@@ -148,6 +163,7 @@ function MobileTrack({
       paused = false
       // 2.5s grace period — long enough for iOS momentum to settle.
       resumeAt = performance.now() + 2500
+      syncOnResume = true
       lastTs = performance.now()
     }
 

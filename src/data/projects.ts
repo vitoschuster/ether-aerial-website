@@ -167,7 +167,7 @@ export const projects: Project[] = [
     description: 'Large-scale event aerial coverage for the Pokémon GO Fest Croatia.',
     featured: true,
     reelOrder: 8,
-    videoScale: 1.2,
+    videoScale: 1.26,
     videoScaleMobile: 1.4,
     credits: 'Aerial Cinematography',
   },
