@@ -3,41 +3,45 @@ import styles from './ClientLogos.module.css'
 // filter: 'invert' → brightness(0) invert(1) → pure white silhouette (for dark logos on transparent bg)
 // filter: 'color'  → show original colors (for logos already white, light, or colored on transparent bg)
 // size: 'lg' → larger height for circular / square logos that look small at default height
-//
-// Verified pixel composition per logo (transparent / usable-color):
-//   toyota.svg    — white fill in SVG, shows correctly as-is (color)
-//   bmw.svg       — full-color roundel (color)
-//   mercedes.svg  — silver gradient (color)
-//   bentley.png   — 70% transparent, light/white logo (color)
-//   ina.png       — 67% transparent, red/orange (color)
-//   koncar.png    — 79% transparent, colored (color)
-//   idj-videos    — 81% transparent, colored (color)
-//   opel.svg      — dark logo → invert → white
-//   porsche.svg   — dark logo → invert → white
-//   mcdonalds.svg — golden arches, transparent bg (color)
-//   pokemon-go.svg— full-color (color)
-const LOGOS: { name: string; src?: string; filter?: 'invert' | 'color'; size?: 'lg' }[] = [
-  { name: 'McDonald\'s',     src: '/images/logos/mcdonalds-logo.svg',  filter: 'color' },
-  { name: 'BMW',             src: '/images/logos/bmw.svg',             filter: 'color', size: 'lg' },
-  { name: 'BMW M',           src: '/images/logos/bmw-m.png',           filter: 'color', size: 'lg' },
-  { name: 'Mercedes',        src: '/images/logos/mercedes-logo.svg',   filter: 'color' },
-  { name: 'Porsche',         src: '/images/logos/porsche.svg',         filter: 'invert' },
-  { name: 'Toyota',          src: '/images/logos/toyota.svg',          filter: 'color' },
-  { name: 'Opel',            src: '/images/logos/opel.svg',            filter: 'invert' },
-  { name: 'Bentley',         src: '/images/logos/bentley.png',         filter: 'color' },
-  { name: 'Pokémon GO',      src: '/images/logos/pokemon-go.svg',      filter: 'color', size: 'lg' },
-  { name: 'INA',             src: '/images/logos/ina.png',             filter: 'color' },
-  { name: 'Končar',          src: '/images/logos/koncar.png',          filter: 'color' },
-  { name: 'HAC',             src: '/images/logos/hac.png',             filter: 'color', size: 'lg' },
-  { name: 'IDJ Videos',      src: '/images/logos/idj-videos.webp',     filter: 'color' },
-  { name: 'Joop!',           src: '/images/logos/joop.jpg',            filter: 'color', size: 'lg' },
-  { name: 'Južni Vetar',     src: '/images/logos/juzni-vetar.jpg',     filter: 'color', size: 'lg' },
-  { name: 'Balkaton',        src: '/images/logos/balkaton.jpg',        filter: 'color', size: 'lg' },
-  { name: 'FAT International', src: '/images/logos/fat-international.png', filter: 'color' },
+// w, h: intrinsic pixel dimensions — passed to <img width height> so the browser reserves the
+//       slot before load. Prevents track-wide layout shift when a late image (esp. wide logos
+//       like porsche at 9.6:1) pops in and suddenly claims ~268px of horizontal space.
+type Logo = {
+  name: string
+  src?: string
+  filter?: 'invert' | 'color'
+  size?: 'lg'
+  w?: number
+  h?: number
+}
+
+const LOGOS: Logo[] = [
+  { name: 'McDonald\'s',       src: '/images/logos/mcdonalds-logo.svg',    filter: 'color',  w: 117,  h: 92 },
+  { name: 'BMW',               src: '/images/logos/bmw.svg',               filter: 'color',  size: 'lg', w: 1015, h: 1015 },
+  { name: 'BMW M',             src: '/images/logos/bmw-m.png',             filter: 'color',  size: 'lg', w: 225,  h: 225 },
+  { name: 'Mercedes',          src: '/images/logos/mercedes-logo.svg',     filter: 'color',  w: 112,  h: 112 },
+  { name: 'Porsche',           src: '/images/logos/porsche.svg',           filter: 'invert', w: 921,  h: 96  },
+  { name: 'Toyota',            src: '/images/logos/toyota.svg',            filter: 'color',  w: 1096, h: 293 },
+  { name: 'Opel',              src: '/images/logos/opel.svg',              filter: 'invert', w: 455,  h: 402 },
+  { name: 'Bentley',           src: '/images/logos/bentley.png',           filter: 'color',  w: 110,  h: 55  },
+  { name: 'Pokémon GO',        src: '/images/logos/pokemon-go.svg',        filter: 'color',  size: 'lg', w: 100, h: 60 },
+  { name: 'INA',               src: '/images/logos/ina.png',               filter: 'color',  w: 1657, h: 664 },
+  { name: 'Končar',            src: '/images/logos/koncar.png',            filter: 'color',  w: 3410, h: 1181 },
+  { name: 'HAC',               src: '/images/logos/hac.png',               filter: 'color',  size: 'lg', w: 420, h: 594 },
+  { name: 'HEP',               src: '/images/logos/hep-logo.png',          filter: 'color',  w: 408,  h: 124 },
+  { name: 'HR Telekom',        src: '/images/logos/hr-telekom-logo.png',   filter: 'color',  size: 'lg', w: 206, h: 245 },
+  { name: 'Rimac',             src: '/images/logos/rimac.webp',            filter: 'color',  size: 'lg', w: 2000, h: 1500 },
+  { name: 'IDJ Videos',        src: '/images/logos/idj-videos.webp',       filter: 'color',  w: 271,  h: 111 },
+  { name: 'WRC',               src: '/images/logos/wrc-01.jpg',            filter: 'color',  size: 'lg', w: 181, h: 185 },
+  { name: 'Joop!',             src: '/images/logos/joop.jpg',              filter: 'color',  size: 'lg', w: 900, h: 900 },
+  { name: 'Južni Vetar',       src: '/images/logos/juzni-vetar.jpg',       filter: 'color',  size: 'lg', w: 900, h: 900 },
+  { name: 'Balkaton',          src: '/images/logos/balkaton.jpg',          filter: 'color',  size: 'lg', w: 900, h: 900 },
+  { name: 'FNC',               src: '/images/logos/fnc_logo.jpeg',         filter: 'color',  w: 2560, h: 858 },
+  { name: 'FAT International', src: '/images/logos/fat-international.png', filter: 'color',  w: 820,  h: 344 },
   { name: 'Imperia' },
 ]
 
-function LogoItem({ name, src, filter, size }: { name: string; src?: string; filter?: 'invert' | 'color'; size?: 'lg' }) {
+function LogoItem({ name, src, filter, size, w, h }: Logo) {
   return (
     <div className={styles.item} aria-label={name}>
       {src ? (
@@ -45,6 +49,10 @@ function LogoItem({ name, src, filter, size }: { name: string; src?: string; fil
         <img
           src={src}
           alt={name}
+          width={w}
+          height={h}
+          loading="eager"
+          decoding="async"
           className={`${styles.logoImg} ${size === 'lg' ? styles.logoLg : ''} ${filter === 'color' ? styles.logoColor : styles.logoInvert}`}
         />
       ) : (
@@ -62,7 +70,7 @@ const ROW_1_MOBILE = LOGOS.filter((_, i) => i % 3 === 0)
 const ROW_2_MOBILE = LOGOS.filter((_, i) => i % 3 === 1)
 const ROW_3_MOBILE = LOGOS.filter((_, i) => i % 3 === 2)
 
-function Track({ items, variant }: { items: typeof LOGOS; variant: 'a' | 'b' | 'c' }) {
+function Track({ items, variant }: { items: Logo[]; variant: 'a' | 'b' | 'c' }) {
   const variantClass =
     variant === 'a' ? styles.trackA : variant === 'b' ? styles.trackB : styles.trackC
   return (
