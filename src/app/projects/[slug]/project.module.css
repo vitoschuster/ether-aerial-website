@@ -90,22 +90,6 @@
   max-width: 60ch;
 }
 
-/* Video */
-.videoWrapper {
-  grid-column: 1 / -1;
-  aspect-ratio: 16 / 9;
-  background: var(--bg-elevated);
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: var(--space-xl);
-}
-
-.videoWrapper iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
 /* Related */
 .related {
   padding: var(--space-xl) var(--side-padding);

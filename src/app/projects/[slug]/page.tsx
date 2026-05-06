@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { projects } from '@/data/projects'
+import ProjectPlayButton from '@/components/project/ProjectPlayButton'
 import styles from './project.module.css'
 
 interface Props {
@@ -49,6 +50,11 @@ export default async function ProjectPage({ params }: Props) {
           <p className={styles.client}>{project.client}</p>
           <h1 className={styles.title}>{project.title}</h1>
         </div>
+        <ProjectPlayButton
+          title={project.title}
+          vimeoId={project.vimeoId}
+          youtubeId={project.youtubeId}
+        />
       </div>
 
       {/* Info */}
@@ -82,18 +88,6 @@ export default async function ProjectPage({ params }: Props) {
 
         {project.description && (
           <p className={styles.description}>{project.description}</p>
-        )}
-
-        {/* Video embed */}
-        {project.youtubeId && (
-          <div className={styles.videoWrapper}>
-            <iframe
-              src={`https://www.youtube-nocookie.com/embed/${project.youtubeId}?rel=0`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              title={project.title}
-            />
-          </div>
         )}
       </div>
 
