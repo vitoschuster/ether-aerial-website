@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import LoadingScreen from '@/components/shared/LoadingScreen'
+import PreloadResources from '@/components/shared/PreloadResources'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        <PreloadResources />
         <LoadingScreen />
         <Navigation />
         {children}
