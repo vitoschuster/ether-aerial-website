@@ -51,6 +51,20 @@ export default async function ProjectPage({ params }: Props) {
         </div>
       </div>
 
+      {/* Video embed — sits between hero and metadata */}
+      {project.youtubeId && (
+        <div className={styles.videoSection}>
+          <div className={styles.videoWrapper}>
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${project.youtubeId}?rel=0`}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title={project.title}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Info */}
       <div className={styles.info}>
         <div className={styles.details}>
@@ -83,27 +97,6 @@ export default async function ProjectPage({ params }: Props) {
         {project.description && (
           <p className={styles.description}>{project.description}</p>
         )}
-
-        {/* Video embed — Vimeo takes priority over YouTube */}
-        {project.vimeoId ? (
-          <div className={styles.videoWrapper}>
-            <iframe
-              src={`https://player.vimeo.com/video/${project.vimeoId}?title=0&byline=0&portrait=0`}
-              allow="autoplay; fullscreen; picture-in-picture"
-              allowFullScreen
-              title={project.title}
-            />
-          </div>
-        ) : project.youtubeId ? (
-          <div className={styles.videoWrapper}>
-            <iframe
-              src={`https://www.youtube-nocookie.com/embed/${project.youtubeId}?rel=0`}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              title={project.title}
-            />
-          </div>
-        ) : null}
       </div>
 
       {/* Related projects */}

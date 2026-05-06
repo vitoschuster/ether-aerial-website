@@ -91,13 +91,17 @@
 }
 
 /* Video */
+.videoSection {
+  padding: var(--space-xl) var(--side-padding) 0;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
 .videoWrapper {
-  grid-column: 1 / -1;
   aspect-ratio: 16 / 9;
   background: var(--bg-elevated);
   border-radius: 4px;
   overflow: hidden;
-  margin-top: var(--space-xl);
 }
 
 .videoWrapper iframe {
