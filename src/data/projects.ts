@@ -28,13 +28,7 @@ export interface Project {
   videoScaleMobile?: number
 }
 
-// Public R2 bucket — no secret, safe to hardcode. Override via env var if bucket changes.
-const R2 = 'https://pub-c8ba59ccdd244b3cb6828e1df4ab7931.r2.dev'
-const r2Base = (process.env.NEXT_PUBLIC_R2_BASE_URL ?? R2).replace(/\/+$/, '')
-
-function r2(filename: string): string {
-  return `${r2Base}/${encodeURIComponent(filename)}`
-}
+import { cdn as r2 } from '@/lib/cdn'
 
 export const projects: Project[] = [
   {
