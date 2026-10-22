@@ -13,6 +13,8 @@
 .icon {
   width: auto;
   height: 56px;
+  /* optical centering: the mark's mass sits left of its box centre (swoosh tail is light) */
+  transform: translateX(8%);
 }
 
 .brand {
