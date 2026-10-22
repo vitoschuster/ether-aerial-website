@@ -49,10 +49,10 @@ export default function AboutPage() {
         </blockquote>
         <div className={styles.signature}>
           <Image
-            src="/images/logo-icon-white.png"
+            src="/images/logotip.svg"
             alt="Ether Aerial"
-            width={44}
-            height={28}
+            width={100}
+            height={21}
             className={styles.sigIcon}
           />
           <span className={styles.sigText}>Ether Aerial</span>

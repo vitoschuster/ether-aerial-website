@@ -56,10 +56,10 @@ export default function LoadingScreen() {
             transition={{ duration: 0.85, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
           >
             <Image
-              src="/images/logo-icon-white.png"
+              src="/images/logotip.svg"
               alt="Ether Aerial"
-              width={64}
-              height={64}
+              width={188}
+              height={40}
               priority
               className={styles.icon}
             />

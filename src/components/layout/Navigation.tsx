@@ -42,10 +42,10 @@ export default function Navigation() {
           {/* Logo: icon + wordmark text */}
           <Link href="/" className={styles.logo} onClick={() => setMenuOpen(false)}>
             <Image
-              src="/images/logo-icon-white.png"
+              src="/images/logotip.svg"
               alt=""
-              width={40}
-              height={40}
+              width={160}
+              height={34}
               priority
               className={styles.logoIcon}
             />

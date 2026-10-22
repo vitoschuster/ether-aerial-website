@@ -96,6 +96,8 @@
 }
 
 .sigIcon {
+  width: auto;
+  height: 21px;
   opacity: 0.5;
   flex-shrink: 0;
 }
