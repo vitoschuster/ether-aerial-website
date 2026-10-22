@@ -39,7 +39,7 @@ export default function Navigation() {
         className={`${styles.nav} ${!visible && !menuOpen ? styles.navHidden : ''}`}
       >
         <div className={styles.inner}>
-          {/* Logo: icon + wordmark text */}
+          {/* Logo: wordmark */}
           <Link href="/" className={styles.logo} onClick={() => setMenuOpen(false)}>
             <Image
               src="/images/logotip.svg"
@@ -49,7 +49,6 @@ export default function Navigation() {
               priority
               className={styles.logoIcon}
             />
-            <span className={styles.logoText}>ETHER AERIAL.</span>
           </Link>
 
           {/* Desktop nav links (≥1024px only) */}

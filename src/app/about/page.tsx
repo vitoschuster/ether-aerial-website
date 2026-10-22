@@ -55,7 +55,6 @@ export default function AboutPage() {
             height={21}
             className={styles.sigIcon}
           />
-          <span className={styles.sigText}>Ether Aerial</span>
         </div>
       </div>
     </main>
