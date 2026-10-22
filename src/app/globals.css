@@ -1,6 +1,14 @@
 /* === DESIGN SYSTEM === */
 @font-face {
   font-family: 'Helvetica Neue';
+  src: url('/fonts/HelveticaNeueLight.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Helvetica Neue';
   src: url('/fonts/HelveticaNeueRoman.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
