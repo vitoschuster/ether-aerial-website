@@ -51,7 +51,7 @@ export default function AboutPage() {
           <Image
             src="/images/logotip.svg"
             alt="Ether Aerial"
-            width={100}
+            width={121}
             height={21}
             className={styles.sigIcon}
           />

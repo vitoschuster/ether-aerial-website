@@ -44,7 +44,7 @@ export default function Navigation() {
             <Image
               src="/images/logotip.svg"
               alt=""
-              width={160}
+              width={195}
               height={34}
               priority
               className={styles.logoIcon}
