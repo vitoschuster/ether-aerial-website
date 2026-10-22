@@ -42,13 +42,13 @@
 
 .logoIcon {
   width: auto;
-  height: 34px;
+  height: 24px;
   flex-shrink: 0;
 }
 
 .logoText {
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--text-primary);
@@ -64,7 +64,7 @@
 
 .link {
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(245, 245, 245, 0.72);
@@ -147,7 +147,7 @@
   align-items: baseline;
   gap: var(--space-md);
   font-size: clamp(2.5rem, 8vw, 5rem);
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: -0.02em;
   color: rgba(245, 245, 245, 0.12);
   line-height: 1.1;
@@ -171,7 +171,7 @@
 
 .menuNum {
   font-size: 0.625rem;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.18em;
   color: var(--text-muted);
   align-self: center;
@@ -212,7 +212,7 @@
 
 .menuSocials a {
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-muted);

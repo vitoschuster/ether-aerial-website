@@ -52,7 +52,7 @@
 
 .client {
   font-size: 0.5625rem;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--accent);
@@ -61,7 +61,7 @@
 
 .title {
   font-size: clamp(0.8125rem, 1.4vw, 1.0625rem);
-  font-weight: 300;
+  font-weight: 400;
   color: var(--text-primary);
   line-height: 1.2;
 }

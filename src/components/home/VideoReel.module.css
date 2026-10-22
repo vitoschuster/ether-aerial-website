@@ -35,7 +35,7 @@
 /* Client name — left of line */
 .indicatorLabel {
   font-size: 0.5625rem;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgba(245, 245, 245, 0.18);
@@ -72,7 +72,7 @@
 /* Number — right of line */
 .indicatorNum {
   font-size: 0.5rem;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.2em;
   color: rgba(245, 245, 245, 0.18);
   width: 18px;
