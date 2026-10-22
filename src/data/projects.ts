@@ -97,7 +97,7 @@ export const projects: Project[] = [
     description: 'Adrenaline-fueled rally footage of the Opel Mokka GSE on gravel stages.',
     featured: true,
     reelOrder: 4,
-    credits: 'FPV Pilot & Cinematographer',
+    credits: 'Aerial Cinematography',
     videoScale: 1.3,
     videoScaleMobile: 1.4,
   },
