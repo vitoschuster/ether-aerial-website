@@ -108,7 +108,7 @@ export const projects: Project[] = [
     reelLabel: 'Mercedes-AMG',
     year: 2026,
     category: 'automotive',
-    poster: '/images/projects/maxresdefault-32.jpg',
+    poster: '/images/projects/mercedes-amg-thumbnail.jpg',
     videoSrc: r2('5-mercedes-amg.mp4'),
     videoSrcWebm: r2('5-mercedes-amg.webm'),
     vimeoId: '1185460079',
