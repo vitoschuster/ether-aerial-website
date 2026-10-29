@@ -3,10 +3,14 @@ import Navigation from '@/components/layout/Navigation'
 import Footer from '@/components/layout/Footer'
 import LoadingScreen from '@/components/shared/LoadingScreen'
 import PreloadResources from '@/components/shared/PreloadResources'
+import StructuredData from '@/components/shared/StructuredData'
+import { siteConfig } from '@/data/siteConfig'
 import './globals.css'
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://etheraerial.com'),
+  // Canonical URLs are set per page (alternates.canonical), not here, so
+  // routes never inherit the home page's canonical.
+  metadataBase: new URL(siteConfig.url),
   title: {
     default: 'Ether Aerial — Drone Cinematography',
     template: '%s | Ether Aerial',
@@ -36,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        <StructuredData />
         <PreloadResources />
         <LoadingScreen />
         <Navigation />

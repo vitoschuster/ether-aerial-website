@@ -6,6 +6,7 @@ import styles from './projects.module.css'
 export const metadata: Metadata = {
   title: 'Projects',
   description: 'Browse all aerial cinematography projects by Ether Aerial.',
+  alternates: { canonical: '/projects' },
 }
 
 function getCardType(i: number): 'normal' | 'wide-left' | 'wide-right' {

@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'About',
   description:
     'Ether Aerial is a drone cinematography studio founded by Fran Kaic, based in Croatia.',
+  alternates: { canonical: '/about' },
 }
 
 export default function AboutPage() {

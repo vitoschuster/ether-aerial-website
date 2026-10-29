@@ -8,7 +8,8 @@
   font-weight: 400;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: rgba(245, 245, 245, 0.3);
+  /* 0.48 is the lowest alpha that meets WCAG AA (4.5:1) on --bg-primary */
+  color: rgba(245, 245, 245, 0.48);
   text-align: center;
   margin-bottom: var(--space-xl);
 }

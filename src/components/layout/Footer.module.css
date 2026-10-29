@@ -1,4 +1,7 @@
 .footer {
+  /* Muted text in the footer (form labels, Instagram, bottom bar) raised from
+     #5A5A5E to the lowest grey that meets WCAG AA (4.5:1) on --bg-secondary. */
+  --text-muted: #7C7C80;
   background: var(--bg-secondary);
   border-top: 1px solid var(--border);
   padding: var(--space-2xl) var(--side-padding) var(--space-xl);

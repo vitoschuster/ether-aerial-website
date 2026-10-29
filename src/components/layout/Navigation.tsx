@@ -40,7 +40,12 @@ export default function Navigation() {
       >
         <div className={styles.inner}>
           {/* Logo: wordmark */}
-          <Link href="/" className={styles.logo} onClick={() => setMenuOpen(false)}>
+          <Link
+            href="/"
+            className={styles.logo}
+            aria-label="Ether Aerial home"
+            onClick={() => setMenuOpen(false)}
+          >
             <Image
               src="/images/logotip.svg"
               alt=""

@@ -101,8 +101,10 @@
 
 /* ─── Mobile: pills only, no labels ─── */
 @media (max-width: 900px) {
+  /* Buttons are 24px wide (pill stays 2px, centred), so the column is 22px
+     wider; right moves 16px -> 5px to keep the pill at the same spot. */
   .indicator {
-    right: 16px;
+    right: 5px;
   }
 
   .indicatorLabel,
@@ -110,8 +112,11 @@
     display: none;
   }
 
+  /* 24x24px minimum touch target (WCAG 2.5.8) without changing the pill. */
   .indicatorItem {
-    padding: 6px 0;
+    min-width: 24px;
+    justify-content: center;
+    padding: 7px 0;
   }
 
   .indicatorPill {

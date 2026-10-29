@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: 'Services',
   description:
     'Aerial cinematography services: Cinelifter FPV, DJI Inspire 3, and Gimbal FPV platforms.',
+  alternates: { canonical: '/services' },
 }
 
 export default function ServicesPage() {
